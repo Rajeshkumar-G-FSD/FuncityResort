@@ -12,9 +12,10 @@ import { RESORT_ADDRESS, RESORT_PHONES, RESORT_EMAIL, RESORT_WHATSAPP } from '..
 interface FooterProps {
   setActiveTab: (tab: string) => void;
   onOpenBooking: () => void;
+  onAdmin: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenBooking }) => {
+export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenBooking, onAdmin }) => {
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
@@ -223,7 +224,9 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenBooking }) =
           <div className="flex items-center gap-6">
             <span className="hover:text-[#087ea4] cursor-pointer">Privacy Policy</span>
             <span className="hover:text-[#087ea4] cursor-pointer">Terms of Service</span>
-            <span className="hover:text-[#087ea4] cursor-pointer">Cookie Preferences</span>
+            <button onClick={onAdmin} className="hover:text-[#087ea4] cursor-pointer">
+              Admin
+            </button>
           </div>
         </div>
       </div>

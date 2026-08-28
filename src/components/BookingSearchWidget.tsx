@@ -1,16 +1,17 @@
 import React, { useRef, useState } from 'react';
 import { Calendar, Search } from 'lucide-react';
-import { GuestSelector, GuestValue, DEFAULT_GUESTS, summariseGuests } from './GuestSelector';
+import { GuestSelector, GuestValue, DEFAULT_GUESTS } from './GuestSelector';
 import { todayISO, addDaysISO, formatDate } from '../utils/dates';
 import { openNativePicker } from '../utils/showPicker';
 
+export interface BookingSearch {
+  checkIn: string;
+  checkOut: string;
+  guests: GuestValue;
+}
+
 interface BookingSearchWidgetProps {
-  onSearch: (criteria: {
-    checkIn: string;
-    checkOut: string;
-    guests: string;
-    rooms: string;
-  }) => void;
+  onSearch: (criteria: BookingSearch) => void;
 }
 
 export const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({ onSearch }) => {
@@ -43,12 +44,7 @@ export const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({ onSear
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSearch({
-      checkIn,
-      checkOut,
-      guests: summariseGuests(guestValue),
-      rooms: '1 Room',
-    });
+    onSearch({ checkIn, checkOut, guests: guestValue });
   };
 
   return (

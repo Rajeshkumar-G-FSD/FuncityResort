@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowLeft, X, ChevronLeft, ChevronRight, CalendarCheck, Star, MapPin } from 'lucide-react';
-import { ROOM_CATEGORIES } from '../data/resortData';
+import { ROOM_TYPES, inr } from '../data/rooms';
 import { RESORT_ADDRESS } from '../data/contact';
 
 interface RoomsPageProps {
@@ -63,7 +63,7 @@ export const RoomsPage: React.FC<RoomsPageProps> = ({ onBack, onBook }) => {
 
       {/* ===== Category sections ===== */}
       <div className="max-w-[1280px] mx-auto px-4 md:px-12 py-14 md:py-20 space-y-16 md:space-y-24">
-        {ROOM_CATEGORIES.map((cat, i) => (
+        {ROOM_TYPES.map((cat, i) => (
           <section key={cat.id} id={cat.id} className="scroll-mt-28">
             {/* Heading row */}
             <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-7">
@@ -78,10 +78,14 @@ export const RoomsPage: React.FC<RoomsPageProps> = ({ onBack, onBook }) => {
                 <p className="max-w-2xl text-[#3f484e] text-sm md:text-base leading-relaxed mt-4">
                   {cat.blurb}
                 </p>
-                <div className="flex items-center gap-4 mt-4">
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-4">
                   <span className="text-lg font-extrabold text-[#1c1c17]">
-                    ₹{cat.price.toLocaleString('en-IN')}
-                    <span className="text-xs font-semibold text-[#6f787e]"> / night</span>
+                    {inr(cat.weekdayRate)}
+                    <span className="text-xs font-semibold text-[#6f787e]"> / night (Mon–Thu)</span>
+                  </span>
+                  <span className="text-sm font-bold text-[#3f484e]">
+                    {inr(cat.weekendRate)}
+                    <span className="text-xs font-semibold text-[#6f787e]"> weekend</span>
                   </span>
                   <span className="flex items-center gap-1 text-xs font-semibold text-[#a6893f]">
                     <Star className="w-3.5 h-3.5 fill-current" /> 3.7 · 413 reviews

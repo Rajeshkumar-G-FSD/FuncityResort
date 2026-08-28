@@ -1,18 +1,14 @@
 import React, { useRef, useState } from 'react';
 import { X, Calendar, Search, Sparkles } from 'lucide-react';
-import { GuestSelector, GuestValue, DEFAULT_GUESTS, summariseGuests } from './GuestSelector';
+import { GuestSelector, GuestValue, DEFAULT_GUESTS } from './GuestSelector';
 import { todayISO, addDaysISO, formatDate } from '../utils/dates';
 import { openNativePicker } from '../utils/showPicker';
+import type { BookingSearch } from './BookingSearchWidget';
 
 interface BookingPopupProps {
   isOpen: boolean;
   onClose: () => void;
-  onSearch: (criteria: {
-    checkIn: string;
-    checkOut: string;
-    guests: string;
-    rooms: string;
-  }) => void;
+  onSearch: (criteria: BookingSearch) => void;
 }
 
 export const BookingPopup: React.FC<BookingPopupProps> = ({ isOpen, onClose, onSearch }) => {
@@ -29,12 +25,7 @@ export const BookingPopup: React.FC<BookingPopupProps> = ({ isOpen, onClose, onS
   const minCheckOut = checkIn ? addDaysISO(checkIn, 1) : addDaysISO(today, 1);
 
   const handleSearch = () => {
-    onSearch({
-      checkIn,
-      checkOut,
-      guests: summariseGuests(guestValue),
-      rooms: '1 Room',
-    });
+    onSearch({ checkIn, checkOut, guests: guestValue });
   };
 
   return (

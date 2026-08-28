@@ -18,6 +18,9 @@ export const RESORT_PHONES = [
 
 export const RESORT_EMAIL = 'reservations@funcityresort.com';
 
+/** UPI id guests pay the advance to. */
+export const RESORT_UPI = 'funcityresort@upi';
+
 export const RESORT_MAPS_URL =
   'https://www.google.com/maps/search/?api=1&query=' +
   encodeURIComponent('Funcity Resorts Lovedale Ooty');

@@ -1,0 +1,13 @@
+rules_version = '2';
+
+// Fun City Resort — Cloud Storage security rules
+// The app serves all images from its own /public folder, so Storage is unused.
+// Everything is denied. If you later upload guest ID docs etc., scope a match
+// block to that path and gate it on request.auth != null.
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

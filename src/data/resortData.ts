@@ -241,49 +241,6 @@ export const TESTIMONIALS: ReviewItem[] = [
   }
 ];
 
-export interface RoomCategory {
-  id: string;
-  title: string;
-  blurb: string;
-  price: number;
-  images: string[];
-}
-
-export const ROOM_CATEGORIES: RoomCategory[] = [
-  {
-    id: 'deluxe',
-    title: 'Deluxe Rooms',
-    blurb:
-      'Spacious and elegantly furnished, with premium free cancellation, Wi-Fi and air conditioning — ideal for solo travellers and couples.',
-    price: 1999,
-    images: [
-      '/images/funcity_couple_room.JPG',
-      '/images/funcity_couple_room_washbasin.JPG',
-      '/images/funcity_couple_room_water_heater.JPG',
-      '/images/funcity_couple_room_resteoom.JPG',
-    ],
-  },
-  {
-    id: 'executive',
-    title: 'Executive Suites',
-    blurb:
-      'Perfect for business travellers — a private work area, exclusive amenities and a calm place to focus between meetings.',
-    price: 2999,
-    images: ['/images/funcity_reception.JPG'],
-  },
-  {
-    id: 'family',
-    title: 'Family Suites',
-    blurb:
-      'Designed for families, with interconnected rooms, ample space, a dedicated dining area and kid-friendly amenities.',
-    price: 3999,
-    images: [
-      '/images/funcity_family_bedroom.JPG',
-      '/images/funcity_family_room_dining_area.JPG',
-    ],
-  },
-];
-
 export const ADD_ON_OPTIONS: AddOnOption[] = [
   {
     id: 'airport-transfer',

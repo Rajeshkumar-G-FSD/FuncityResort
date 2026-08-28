@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { auth } from './firebase';
+import { LOCAL_ADMIN_KEY } from './data/admin';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
-import { BookingSearchWidget } from './components/BookingSearchWidget';
+import { BookingSearchWidget, BookingSearch } from './components/BookingSearchWidget';
 import { AboutSection } from './components/AboutSection';
 import { ServicesSection } from './components/ServicesSection';
 import { RoomsPage } from './components/RoomsPage';
@@ -10,61 +13,107 @@ import { TestimonialsSection } from './components/TestimonialsSection';
 import { ContactSection } from './components/ContactSection';
 import { BookingPopup } from './components/BookingPopup';
 import { BookingPage } from './components/BookingPage';
+import { AdminLoginModal } from './components/AdminLoginModal';
+import { AdminPage } from './components/AdminPage';
 import { Footer } from './components/Footer';
-import { RESORT_ROOMS, RESORT_SERVICES, TESTIMONIALS } from './data/resortData';
-import { Room, ServiceItem } from './types';
-import { Star, ArrowRight, ShieldCheck, Waves, Sparkles, MapPin, Phone, CalendarCheck } from 'lucide-react';
+import { GuestValue, DEFAULT_GUESTS } from './components/GuestSelector';
+import { RESORT_ROOMS, TESTIMONIALS } from './data/resortData';
+import { Room } from './types';
+import { Star } from 'lucide-react';
 
 export function App() {
   const [activeTab, setActiveTab] = useState<string>('home');
-  const [selectedRoom, setSelectedRoom] = useState<Room>(RESORT_ROOMS[0]);
+  const [selectedRoom] = useState<Room>(RESORT_ROOMS[0]);
+
   const [isBookingPopupOpen, setIsBookingPopupOpen] = useState(false);
-  const [bookingCategoryId, setBookingCategoryId] = useState<string | undefined>(undefined);
-  const [searchCriteria, setSearchCriteria] = useState<{
-    checkIn: string;
-    checkOut: string;
-    guests: string;
-    rooms: string;
-  }>({
-    checkIn: '',
-    checkOut: '',
-    guests: '2 Adults',
-    rooms: '1 Room',
+  const [bookingRoomTypeId, setBookingRoomTypeId] = useState<string | undefined>(undefined);
+  const [checkIn, setCheckIn] = useState('');
+  const [checkOut, setCheckOut] = useState('');
+  const [guestValue, setGuestValue] = useState<GuestValue>(DEFAULT_GUESTS);
+
+  // Firebase auth session: undefined = resolving, null = none, string = email
+  const [fbUser, setFbUser] = useState<string | null | undefined>(undefined);
+  const [localAdmin, setLocalAdmin] = useState<boolean>(() => {
+    try {
+      return sessionStorage.getItem(LOCAL_ADMIN_KEY) === '1';
+    } catch {
+      return false;
+    }
   });
+  const [isAdminLoginOpen, setIsAdminLoginOpen] = useState(false);
+
+  const authResolved = fbUser !== undefined;
+  const isAdmin = !!fbUser || localAdmin;
+  const adminEmail = fbUser && fbUser !== 'admin' ? fbUser : null;
 
   const scrollTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
-  // Navigate to the full booking page (optionally pre-selecting a room category)
-  const goToBookingPage = (categoryId?: string) => {
-    setBookingCategoryId(categoryId);
+  useEffect(
+    () => onAuthStateChanged(auth, (u) => setFbUser(u ? u.email ?? 'admin' : null)),
+    []
+  );
+
+  // Deep-link: #admin opens the admin area (login first if needed)
+  useEffect(() => {
+    if (!authResolved) return;
+    if (window.location.hash === '#admin') {
+      if (isAdmin) setActiveTab('admin');
+      else setIsAdminLoginOpen(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authResolved]);
+
+  // If admin access is lost while on the panel, leave it
+  useEffect(() => {
+    if (!isAdmin && activeTab === 'admin') setActiveTab('home');
+  }, [isAdmin, activeTab]);
+
+  const handleAdminSignOut = () => {
+    signOut(auth).catch(() => {});
+    try {
+      sessionStorage.removeItem(LOCAL_ADMIN_KEY);
+    } catch {
+      /* ignore */
+    }
+    setLocalAdmin(false);
+    setActiveTab('home');
+    scrollTop();
+  };
+
+  const handleAdminLoginSuccess = () => {
+    setIsAdminLoginOpen(false);
+    try {
+      setLocalAdmin(sessionStorage.getItem(LOCAL_ADMIN_KEY) === '1');
+    } catch {
+      setLocalAdmin(true);
+    }
+    setActiveTab('admin');
+    scrollTop();
+  };
+
+  const goToBookingPage = (roomTypeId?: string) => {
+    setBookingRoomTypeId(roomTypeId);
     setActiveTab('booking');
     scrollTop();
   };
 
-  // Inline search widget on the home page -> jump straight to the booking page
-  const handleSearch = (criteria: {
-    checkIn: string;
-    checkOut: string;
-    guests: string;
-    rooms: string;
-  }) => {
-    setSearchCriteria(criteria);
-    setBookingCategoryId(undefined);
+  const applySearch = (s: BookingSearch) => {
+    setCheckIn(s.checkIn);
+    setCheckOut(s.checkOut);
+    setGuestValue(s.guests);
+  };
+
+  const handleSearch = (s: BookingSearch) => {
+    applySearch(s);
+    setBookingRoomTypeId(undefined);
     goToBookingPage();
   };
 
-  // Header / footer "Book Now" -> open the quick popup dialog
   const openBookingPopup = () => setIsBookingPopupOpen(true);
 
-  // "Search" inside the popup -> close it and open the booking page
-  const handlePopupSearch = (criteria: {
-    checkIn: string;
-    checkOut: string;
-    guests: string;
-    rooms: string;
-  }) => {
-    setSearchCriteria(criteria);
-    setBookingCategoryId(undefined);
+  const handlePopupSearch = (s: BookingSearch) => {
+    applySearch(s);
+    setBookingRoomTypeId(undefined);
     setIsBookingPopupOpen(false);
     goToBookingPage();
   };
@@ -74,38 +123,49 @@ export function App() {
     scrollTop();
   };
 
+  const openAdmin = () => {
+    if (isAdmin) {
+      setActiveTab('admin');
+      scrollTop();
+    } else {
+      setIsAdminLoginOpen(true);
+    }
+  };
+
+  /* ===================== ADMIN (full-screen, no site chrome) ===================== */
+  if (activeTab === 'admin' && isAdmin) {
+    return (
+      <AdminPage
+        adminEmail={adminEmail}
+        onExit={() => {
+          setActiveTab('home');
+          scrollTop();
+        }}
+        onSignOut={handleAdminSignOut}
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#fcf9f1] text-[#1c1c17] flex flex-col font-sans selection:bg-[#087ea4] selection:text-white">
-      {/* Fixed Sticky Header Navigation */}
       <Navbar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         onOpenBooking={openBookingPopup}
+        onAdmin={openAdmin}
         isScrolledForce={activeTab !== 'home'}
       />
 
-      {/* Main App Body */}
       <main className="flex-grow">
-        {/* ================= 1. HOME TAB ================= */}
         {activeTab === 'home' && (
           <div>
-            {/* Clean Hero Section (Text removed from hero as requested) */}
             <HeroSection onExploreClick={goToRooms} />
-
-            {/* Floating Booking Search Widget */}
             <BookingSearchWidget onSearch={handleSearch} />
-
-            {/* Services Section */}
-            <ServicesSection
-              onSelectService={(service) => {
-                // optional callback
-              }}
-            />
+            <ServicesSection onSelectService={() => {}} />
 
             {/* Featured Suite Spotlight Showcase */}
             <section className="py-12 md:py-20 px-4 md:px-12 max-w-[1280px] mx-auto">
               <div className="bg-white rounded-[28px] overflow-hidden sunlight-shadow border border-[#e5e2db] grid grid-cols-1 lg:grid-cols-12 gap-0">
-                {/* Image Bento Side (7 Cols) */}
                 <div className="lg:col-span-7 relative h-[320px] sm:h-[400px] lg:h-auto overflow-hidden group">
                   <img
                     src={selectedRoom.mainImage}
@@ -116,13 +176,8 @@ export function App() {
                   <div className="absolute top-5 left-5 bg-white/95 backdrop-blur-md text-[#006483] text-xs font-bold px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow">
                     Featured Signature Suite
                   </div>
-                  <div className="absolute bottom-5 left-5 text-white">
-                    <span className="text-sm font-semibold opacity-90">Starting from</span>
-                    <p className="text-2xl font-extrabold">${selectedRoom.price} / night</p>
-                  </div>
                 </div>
 
-                {/* Details Side (5 Cols) */}
                 <div className="lg:col-span-5 p-8 md:p-12 flex flex-col justify-between space-y-6">
                   <div className="space-y-4">
                     <div className="flex items-center gap-2">
@@ -131,7 +186,9 @@ export function App() {
                         <span>{selectedRoom.rating}</span>
                       </div>
                       <span className="text-[#bec8ce]">•</span>
-                      <span className="text-xs text-[#6f787e]">{selectedRoom.reviewsCount} verified reviews</span>
+                      <span className="text-xs text-[#6f787e]">
+                        {selectedRoom.reviewsCount} verified reviews
+                      </span>
                     </div>
 
                     <h3 className="text-2xl md:text-3xl font-extrabold text-[#1c1c17] tracking-tight">
@@ -159,7 +216,7 @@ export function App() {
                       onClick={goToRooms}
                       className="w-full sm:w-auto flex-1 bg-[#087ea4] hover:bg-[#006483] text-white font-bold text-sm py-3.5 px-6 rounded-full text-center floating-shadow hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
                     >
-                      View Full Details
+                      View Rooms
                     </button>
                     <button
                       onClick={openBookingPopup}
@@ -199,58 +256,53 @@ export function App() {
           </div>
         )}
 
-        {/* ================= 1b. ABOUT US TAB ================= */}
         {activeTab === 'about' && (
           <div className="pt-20 md:pt-24">
             <AboutSection onOpenBooking={openBookingPopup} />
           </div>
         )}
 
-        {/* ================= 2. SERVICES TAB ================= */}
         {activeTab === 'services' && (
           <div className="pt-20 md:pt-24">
             <ServicesSection />
           </div>
         )}
 
-        {/* ================= 3. ROOMS & SUITES PAGE ================= */}
         {activeTab === 'rooms' && (
           <RoomsPage
             onBack={() => {
               setActiveTab('home');
               scrollTop();
             }}
-            onBook={(categoryId) => goToBookingPage(categoryId)}
+            onBook={(roomTypeId) => goToBookingPage(roomTypeId)}
           />
         )}
 
-        {/* ================= 3b. BOOKING PAGE ================= */}
         {activeTab === 'booking' && (
           <BookingPage
             onBack={() => {
               setActiveTab('home');
               scrollTop();
             }}
-            initialCategoryId={bookingCategoryId}
-            initialCriteria={searchCriteria}
+            initialRoomTypeId={bookingRoomTypeId}
+            initialCheckIn={checkIn}
+            initialCheckOut={checkOut}
+            initialGuests={guestValue}
           />
         )}
 
-        {/* ================= 4. GALLERY TAB ================= */}
         {activeTab === 'gallery' && (
           <div className="pt-20 md:pt-24">
             <GallerySection />
           </div>
         )}
 
-        {/* ================= 5. TESTIMONIALS TAB ================= */}
         {activeTab === 'testimonials' && (
           <div className="pt-20 md:pt-24">
             <TestimonialsSection />
           </div>
         )}
 
-        {/* ================= 6. CONTACT TAB ================= */}
         {activeTab === 'contact' && (
           <div className="pt-16 md:pt-20">
             <ContactSection />
@@ -258,17 +310,22 @@ export function App() {
         )}
       </main>
 
-      {/* Quick "Book Now" popup dialog */}
       <BookingPopup
         isOpen={isBookingPopupOpen}
         onClose={() => setIsBookingPopupOpen(false)}
         onSearch={handlePopupSearch}
       />
 
-      {/* Luxury Footer */}
+      <AdminLoginModal
+        isOpen={isAdminLoginOpen}
+        onClose={() => setIsAdminLoginOpen(false)}
+        onSuccess={handleAdminLoginSuccess}
+      />
+
       <Footer
         setActiveTab={setActiveTab}
         onOpenBooking={openBookingPopup}
+        onAdmin={openAdmin}
       />
     </div>
   );
