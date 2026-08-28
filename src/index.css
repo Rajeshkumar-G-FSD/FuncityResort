@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+  
+  body {
+    font-family: var(--font-sans);
+    background-color: #fcf9f1;
+    color: #1c1c17;
+    overflow-x: hidden;
+  }
+}
+
+/* Custom design system classes matching Azure Horizon luxury aesthetic */
+.sunlight-shadow {
+  box-shadow: 0 16px 32px -12px rgba(7, 90, 120, 0.12), 0 4px 16px -4px rgba(7, 90, 120, 0.04);
+}
+
+.sunlight-shadow-hover {
+  box-shadow: 0 24px 48px -12px rgba(7, 90, 120, 0.18), 0 8px 24px -4px rgba(7, 90, 120, 0.08);
+}
+
+.floating-shadow {
+  box-shadow: 0 24px 48px -12px rgba(7, 90, 120, 0.16);
+}
+
+.glass-nav {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.glass-card {
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #bec8ce;
+  border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #6f787e;
+}
+
