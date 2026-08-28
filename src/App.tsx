@@ -16,6 +16,7 @@ import { BookingPage } from './components/BookingPage';
 import { AdminLoginModal } from './components/AdminLoginModal';
 import { AdminPage } from './components/AdminPage';
 import { Footer } from './components/Footer';
+import { ScrollToTop } from './components/ScrollToTop';
 import { GuestValue, DEFAULT_GUESTS } from './components/GuestSelector';
 import { TESTIMONIALS } from './data/resortData';
 import { ROOM_TYPES, fromRate, inr } from './data/rooms';
@@ -161,7 +162,7 @@ export function App() {
       <main className="flex-grow">
         {activeTab === 'home' && (
           <div>
-            <HeroSection onExploreClick={goToRooms} />
+            <HeroSection onExploreClick={goToRooms} onAdmin={openAdmin} />
             <BookingSearchWidget onSearch={handleSearch} />
             <ServicesSection onSelectService={() => {}} />
 
@@ -350,6 +351,8 @@ export function App() {
         onOpenBooking={openBookingPopup}
         onAdmin={openAdmin}
       />
+
+      <ScrollToTop />
     </div>
   );
 }

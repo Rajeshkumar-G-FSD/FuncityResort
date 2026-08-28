@@ -1,7 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Facebook, Instagram, Youtube, Mail, ShieldCheck } from 'lucide-react';
+import { RESORT_SOCIAL, RESORT_EMAIL } from '../data/contact';
 
 interface HeroSectionProps {
   onExploreClick?: () => void;
+  onAdmin?: () => void;
 }
 
 const HERO_VIDEO = '/images/funcity_ooty_fog.mp4';
@@ -9,7 +12,7 @@ const HERO_POSTER = '/images/funcity.png';
 // Seconds of overlap between the ending clip and the restarting clip
 const CROSSFADE = 0.8;
 
-export const HeroSection: React.FC<HeroSectionProps> = ({ onExploreClick }) => {
+export const HeroSection: React.FC<HeroSectionProps> = ({ onExploreClick, onAdmin }) => {
   const videoARef = useRef<HTMLVideoElement>(null);
   const videoBRef = useRef<HTMLVideoElement>(null);
   const activeIsARef = useRef(true);
@@ -89,6 +92,32 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onExploreClick }) => {
         {/* Hero heading and descriptive paragraph removed per request */}
       </div>
 
+      {/* Right-side glass social rail */}
+      <div className="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-2.5 md:gap-3">
+        <RailLink href={RESORT_SOCIAL.facebook} label="Facebook">
+          <Facebook className="w-4 h-4 md:w-[18px] md:h-[18px]" />
+        </RailLink>
+        <RailLink href={RESORT_SOCIAL.instagram} label="Instagram">
+          <Instagram className="w-4 h-4 md:w-[18px] md:h-[18px]" />
+        </RailLink>
+        <RailLink href={RESORT_SOCIAL.youtube} label="YouTube">
+          <Youtube className="w-4 h-4 md:w-[18px] md:h-[18px]" />
+        </RailLink>
+        <RailLink href={`mailto:${RESORT_EMAIL}`} label="Email us" external={false}>
+          <Mail className="w-4 h-4 md:w-[18px] md:h-[18px]" />
+        </RailLink>
+        {onAdmin && (
+          <button
+            onClick={onAdmin}
+            aria-label="Admin login"
+            className="w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white bg-white/10 hover:bg-white/25 border border-white/20 backdrop-blur-md transition-all hover:scale-110 active:scale-95"
+          >
+            <ShieldCheck className="w-4 h-4 md:w-[18px] md:h-[18px]" />
+          </button>
+        )}
+        <span className="w-px h-8 bg-white/25 mt-1" />
+      </div>
+
       {/* Foamy Sea-Wash Divider at bottom of Hero (photo-style surf wash) */}
       <div className="absolute bottom-0 left-0 right-0 w-full overflow-hidden leading-none z-10 pointer-events-none translate-y-[1px]">
         <svg
@@ -157,3 +186,19 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onExploreClick }) => {
     </section>
   );
 };
+
+const RailLink: React.FC<{
+  href: string;
+  label: string;
+  external?: boolean;
+  children: React.ReactNode;
+}> = ({ href, label, external = true, children }) => (
+  <a
+    href={href}
+    aria-label={label}
+    {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+    className="w-9 h-9 md:w-10 md:h-10 rounded-full flex items-center justify-center text-white bg-white/10 hover:bg-white/25 border border-white/20 backdrop-blur-md transition-all hover:scale-110 active:scale-95"
+  >
+    {children}
+  </a>
+);

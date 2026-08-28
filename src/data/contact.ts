@@ -24,3 +24,9 @@ export const RESORT_UPI = 'funcityresort@upi';
 export const RESORT_MAPS_URL =
   'https://www.google.com/maps/search/?api=1&query=' +
   encodeURIComponent('Funcity Resorts Lovedale Ooty');
+
+export const RESORT_SOCIAL = {
+  facebook: 'https://www.facebook.com/',
+  instagram: 'https://www.instagram.com/',
+  youtube: 'https://www.youtube.com/',
+};
