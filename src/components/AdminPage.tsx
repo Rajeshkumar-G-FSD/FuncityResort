@@ -13,6 +13,8 @@ import {
   X as XIcon,
   Clock,
   TrendingUp,
+  LayoutDashboard,
+  CalendarRange,
 } from 'lucide-react';
 import {
   subscribeBookings,
@@ -23,6 +25,7 @@ import {
 import { formatDate, todayISO, toISODate } from '../utils/dates';
 import { inr } from '../data/rooms';
 import { RESORT_NAME } from '../data/contact';
+import { RoomCalendar } from './RoomCalendar';
 
 interface AdminPageProps {
   onExit: () => void;
@@ -47,7 +50,10 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onExit, onSignOut, adminEm
   const [busyId, setBusyId] = useState<string | null>(null);
   const [nonce, setNonce] = useState(0); // bump to re-subscribe
   const [toast, setToast] = useState<{ msg: string; kind: 'ok' | 'err' } | null>(null);
+  const [view, setView] = useState<'dashboard' | 'calendar'>('dashboard');
   const bellRef = useRef<HTMLDivElement>(null);
+
+  const pushToast = (msg: string, kind: 'ok' | 'err') => setToast({ msg, kind });
 
   useEffect(() => {
     if (!toast) return;
@@ -293,6 +299,29 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onExit, onSignOut, adminEm
           </div>
         )}
 
+        {/* View switcher */}
+        <div className="flex gap-1 bg-white border border-[#ded2b5] rounded-xl p-1 w-max">
+          {([
+            ['dashboard', 'Dashboard', <LayoutDashboard key="d" className="w-3.5 h-3.5" />],
+            ['calendar', 'Room calendar', <CalendarRange key="c" className="w-3.5 h-3.5" />],
+          ] as const).map(([id, label, icon]) => (
+            <button
+              key={id}
+              onClick={() => setView(id)}
+              className={`flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold rounded-lg transition-colors ${
+                view === id ? 'bg-[#1c1c17] text-white' : 'text-[#6f6650] hover:bg-[#f4f1e9]'
+              }`}
+            >
+              {icon}
+              {label}
+            </button>
+          ))}
+        </div>
+
+        {view === 'calendar' && <RoomCalendar bookings={rows ?? []} onToast={pushToast} />}
+
+        {view === 'dashboard' && (
+        <>
         {/* KPI cards */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
           <Kpi
@@ -380,6 +409,8 @@ export const AdminPage: React.FC<AdminPageProps> = ({ onExit, onSignOut, adminEm
             <BookingCard key={b.id} b={b} busy={busyId === b.id} onStatus={setStatus} />
           ))}
         </div>
+        </>
+        )}
       </main>
 
       {toast && (

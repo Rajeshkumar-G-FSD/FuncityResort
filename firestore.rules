@@ -18,6 +18,17 @@ service cloud.firestore {
       return v is string && v.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$');
     }
 
+    // A manual room block = one room, one night. Shape is tightly bounded so
+    // an unauthenticated write can only ever "block a real room on a real day".
+    function validRoomBlock(d) {
+      return d.keys().hasOnly(['roomNumber', 'date', 'note', 'createdAt'])
+             && d.keys().hasAll(['roomNumber', 'date', 'createdAt'])
+             && d.roomNumber is string && d.roomNumber.size() >= 1 && d.roomNumber.size() <= 8
+             && isISODate(d.date)
+             && d.createdAt is timestamp
+             && (!('note' in d) || (d.note is string && d.note.size() <= 200));
+    }
+
     // Shape + value validation for a booking created by the website.
     // Deliberately lenient on formats (dates as strings, numbers as `number`,
     // timestamps as `timestamp`) so legitimate writes are never rejected —
@@ -84,6 +95,20 @@ service cloud.firestore {
       allow create: if validNewBooking(request.resource.data);
       allow update: if validStatusUpdate();
       allow delete: if false;
+    }
+
+    /* --------------------------- roomBlocks -------------------------- */
+    // Manual room blocks made from the admin calendar.
+    // read  : public — guests need it to compute availability.
+    // create: anyone, but only a tightly-shaped one-room-one-night doc.
+    // delete: anyone — "unblock" from the admin calendar (local admin gate).
+    // update: never — blocks are create/delete only.
+    // Harden create + delete with `isSignedIn() &&` after enabling Firebase Auth.
+    match /roomBlocks/{blockId} {
+      allow read:   if true;
+      allow create: if validRoomBlock(request.resource.data);
+      allow delete: if true;
+      allow update: if false;
     }
 
     /* --------------------- deny everything else ---------------------- */

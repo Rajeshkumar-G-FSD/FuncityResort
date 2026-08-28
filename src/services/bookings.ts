@@ -12,6 +12,7 @@ import {
   Timestamp,
 } from 'firebase/firestore';
 import { db } from '../firebase';
+import { getManuallyBlockedRooms } from './roomBlocks';
 
 export type BookingStatus = 'pending' | 'confirmed' | 'cancelled';
 
@@ -61,9 +62,9 @@ export const rangesOverlap = (aIn: string, aOut: string, bIn: string, bOut: stri
   aIn < bOut && aOut > bIn;
 
 /**
- * Room numbers that are unavailable for the requested dates.
- * A room is locked while a booking that overlaps the range is either
- * `pending` (awaiting confirmation) or `confirmed`.
+ * Room numbers that are unavailable for the requested dates — because a
+ * `pending`/`confirmed` booking overlaps the range, OR an admin has manually
+ * blocked the room for one of those nights.
  */
 export async function getBlockedRoomNumbers(
   checkIn: string,
@@ -71,15 +72,20 @@ export async function getBlockedRoomNumbers(
 ): Promise<Set<string>> {
   const blocked = new Set<string>();
   if (!checkIn || !checkOut) return blocked;
-  const snap = await getDocs(
-    query(collection(db, COL), where('status', 'in', ['pending', 'confirmed']))
-  );
-  snap.forEach((d) => {
+
+  const [bookingSnap, manualBlocks] = await Promise.all([
+    getDocs(query(collection(db, COL), where('status', 'in', ['pending', 'confirmed']))),
+    getManuallyBlockedRooms(checkIn, checkOut),
+  ]);
+
+  bookingSnap.forEach((d) => {
     const b = d.data() as BookingInput;
     if (b.checkIn && b.checkOut && rangesOverlap(b.checkIn, b.checkOut, checkIn, checkOut)) {
       blocked.add(b.roomNumber);
     }
   });
+  manualBlocks.forEach((r) => blocked.add(r));
+
   return blocked;
 }
 
