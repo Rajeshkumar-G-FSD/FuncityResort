@@ -25,12 +25,21 @@ export const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({ onSear
   const today = todayISO();
   const minCheckOut = checkIn ? addDaysISO(checkIn, 1) : addDaysISO(today, 1);
 
+  const openPicker = (el: HTMLInputElement | null) => {
+    try {
+      (el as (HTMLInputElement & { showPicker?: () => void }) | null)?.showPicker?.();
+    } catch {
+      /* already open */
+    }
+  };
+
   const handleCheckInChange = (value: string) => {
+    if (value === checkIn) return;
     setCheckIn(value);
     // Check-out must always be after check-in
     if (value && checkOut && checkOut <= value) setCheckOut('');
-    // Guide the user straight to picking check-out
-    if (value) openNativePicker(checkOutRef.current);
+    // Only jump to check-out when it isn't chosen yet
+    if (value && !checkOut) openNativePicker(checkOutRef.current);
   };
 
   // Progress: guests (always ready) -> check-in -> check-out
@@ -60,34 +69,36 @@ export const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({ onSear
             />
           </div>
 
-          {/* CHECK-IN — calendar opens from today */}
+          {/* CHECK-IN — tap anywhere to (re)open the calendar */}
           <div className="relative flex-1 min-w-0 rounded-xl border-b md:border-b-0 md:border-r border-[#ece3cf] hover:bg-[#f7f1e2]/60 transition-colors">
-            <label className="w-full flex items-center gap-3.5 px-4 py-4 md:px-5 cursor-pointer">
+            <div className="w-full flex items-center gap-3.5 px-4 py-4 md:px-5">
               <Calendar className="w-5 h-5 text-[#a6893f] flex-shrink-0" strokeWidth={1.75} />
               <span className="flex-grow min-w-0">
                 <span className="block text-[11px] font-bold uppercase tracking-[0.18em] text-[#8a7643]">
                   Check-In
                 </span>
-                <span className="relative block">
-                  <span
-                    className={`block text-[17px] font-semibold truncate ${
-                      checkIn ? 'text-[#2f2a20]' : 'text-[#b8a986]'
-                    }`}
-                  >
-                    {checkIn ? formatDate(checkIn) : 'Select Date'}
-                  </span>
-                  <input
-                    ref={checkInRef}
-                    type="date"
-                    value={checkIn}
-                    min={today}
-                    onChange={(e) => handleCheckInChange(e.target.value)}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                    aria-label="Check-in date"
-                  />
+                <span
+                  className={`block text-[17px] font-semibold truncate ${
+                    checkIn ? 'text-[#2f2a20]' : 'text-[#b8a986]'
+                  }`}
+                >
+                  {checkIn ? formatDate(checkIn) : 'Select Date'}
+                </span>
+                <span className="block text-[11px] font-semibold text-[#a6893f] h-3 leading-3">
+                  {checkIn ? 'Tap to change' : ''}
                 </span>
               </span>
-            </label>
+            </div>
+            <input
+              ref={checkInRef}
+              type="date"
+              value={checkIn}
+              min={today}
+              onChange={(e) => handleCheckInChange(e.target.value)}
+              onClick={(e) => openPicker(e.currentTarget)}
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+              aria-label="Check-in date"
+            />
           </div>
 
           {/* CHECK-OUT — enabled after check-in, opens from the next day */}
@@ -96,37 +107,35 @@ export const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({ onSear
               checkIn ? 'hover:bg-[#f7f1e2]/60' : 'opacity-60'
             }`}
           >
-            <label
-              className={`w-full flex items-center gap-3.5 px-4 py-4 md:px-5 ${
-                checkIn ? 'cursor-pointer' : 'cursor-not-allowed'
-              }`}
-            >
+            <div className="w-full flex items-center gap-3.5 px-4 py-4 md:px-5">
               <Calendar className="w-5 h-5 text-[#a6893f] flex-shrink-0" strokeWidth={1.75} />
               <span className="flex-grow min-w-0">
                 <span className="block text-[11px] font-bold uppercase tracking-[0.18em] text-[#8a7643]">
                   Check-Out
                 </span>
-                <span className="relative block">
-                  <span
-                    className={`block text-[17px] font-semibold truncate ${
-                      checkOut ? 'text-[#2f2a20]' : 'text-[#b8a986]'
-                    }`}
-                  >
-                    {checkOut ? formatDate(checkOut) : checkIn ? 'Select Date' : 'Check-in first'}
-                  </span>
-                  <input
-                    ref={checkOutRef}
-                    type="date"
-                    value={checkOut}
-                    min={minCheckOut}
-                    disabled={!checkIn}
-                    onChange={(e) => setCheckOut(e.target.value)}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
-                    aria-label="Check-out date"
-                  />
+                <span
+                  className={`block text-[17px] font-semibold truncate ${
+                    checkOut ? 'text-[#2f2a20]' : 'text-[#b8a986]'
+                  }`}
+                >
+                  {checkOut ? formatDate(checkOut) : checkIn ? 'Select Date' : 'Check-in first'}
+                </span>
+                <span className="block text-[11px] font-semibold text-[#a6893f] h-3 leading-3">
+                  {checkOut ? 'Tap to change' : ''}
                 </span>
               </span>
-            </label>
+            </div>
+            <input
+              ref={checkOutRef}
+              type="date"
+              value={checkOut}
+              min={minCheckOut}
+              disabled={!checkIn}
+              onChange={(e) => setCheckOut(e.target.value)}
+              onClick={(e) => openPicker(e.currentTarget)}
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
+              aria-label="Check-out date"
+            />
           </div>
 
           {/* SEARCH */}
