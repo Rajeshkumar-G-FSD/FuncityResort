@@ -19,7 +19,7 @@ export const ScrollToTop: React.FC = () => {
       type="button"
       onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
       aria-label="Scroll to top"
-      className={`group fixed right-2 md:right-4 bottom-6 md:bottom-10 z-40 flex flex-col items-center gap-3 transition-all duration-500 ${
+      className={`group fixed right-3 md:right-5 bottom-24 md:bottom-28 z-40 flex flex-col items-center gap-3 transition-all duration-500 ${
         show ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6 pointer-events-none'
       }`}
     >

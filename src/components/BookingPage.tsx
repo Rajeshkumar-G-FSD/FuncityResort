@@ -42,6 +42,9 @@ interface BookingPageProps {
   initialCheckIn?: string;
   initialCheckOut?: string;
   initialGuests?: GuestValue;
+  initialGuestName?: string;
+  initialGuestEmail?: string;
+  initialGuestPhone?: string;
 }
 
 type Step = 'rooms' | 'details' | 'payment' | 'confirmed';
@@ -104,6 +107,9 @@ export const BookingPage: React.FC<BookingPageProps> = ({
   initialCheckIn,
   initialCheckOut,
   initialGuests,
+  initialGuestName,
+  initialGuestEmail,
+  initialGuestPhone,
 }) => {
   const [checkIn, setCheckIn] = useState(
     isISODate(initialCheckIn || '') ? (initialCheckIn as string) : ''
@@ -121,9 +127,9 @@ export const BookingPage: React.FC<BookingPageProps> = ({
   const [availError, setAvailError] = useState(false);
 
   const [step, setStep] = useState<Step>('rooms');
-  const [guestName, setGuestName] = useState('');
-  const [guestEmail, setGuestEmail] = useState('');
-  const [guestPhone, setGuestPhone] = useState('');
+  const [guestName, setGuestName] = useState(initialGuestName ?? '');
+  const [guestEmail, setGuestEmail] = useState(initialGuestEmail ?? '');
+  const [guestPhone, setGuestPhone] = useState(initialGuestPhone ?? '');
   const [specialRequests, setSpecialRequests] = useState('');
 
   const [payOption, setPayOption] = useState<PayOption>('10');

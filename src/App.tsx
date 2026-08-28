@@ -19,6 +19,7 @@ import { AdminPage } from './components/AdminPage';
 import { Footer } from './components/Footer';
 import { ScrollToTop } from './components/ScrollToTop';
 import { ReviewsMarquee } from './components/ReviewsMarquee';
+import { ChatBot, ChatLead } from './components/ChatBot';
 import BlurText from './components/BlurText';
 import SplitText from './components/SplitText';
 import { GuestValue, DEFAULT_GUESTS } from './components/GuestSelector';
@@ -38,6 +39,7 @@ export function App() {
   const [checkIn, setCheckIn] = useState('');
   const [checkOut, setCheckOut] = useState('');
   const [guestValue, setGuestValue] = useState<GuestValue>(DEFAULT_GUESTS);
+  const [chatLead, setChatLead] = useState<ChatLead | null>(null);
 
   // Firebase auth session: undefined = resolving, null = none, string = email
   const [fbUser, setFbUser] = useState<string | null | undefined>(undefined);
@@ -123,6 +125,16 @@ export function App() {
   };
 
   const openBookingPopup = () => setIsBookingPopupOpen(true);
+
+  // Chatbot "Book Now" -> capture the lead, jump to the booking page + open the guest popup
+  const handleChatBook = (lead: ChatLead) => {
+    setChatLead(lead);
+    setBookingRoomTypeId(undefined);
+    setActiveTab('booking');
+    window.history.pushState({}, '', tabToPath('booking'));
+    window.scrollTo({ top: 0 });
+    setIsBookingPopupOpen(true);
+  };
 
   const handlePopupSearch = (s: BookingSearch) => {
     applySearch(s);
@@ -288,6 +300,9 @@ export function App() {
             initialCheckIn={checkIn}
             initialCheckOut={checkOut}
             initialGuests={guestValue}
+            initialGuestName={chatLead?.name}
+            initialGuestEmail={chatLead?.email}
+            initialGuestPhone={chatLead?.whatsapp || chatLead?.phone}
           />
         )}
 
@@ -325,6 +340,7 @@ export function App() {
       />
 
       <ScrollToTop />
+      <ChatBot onBookNow={handleChatBook} />
     </div>
   );
 }
