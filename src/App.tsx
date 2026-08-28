@@ -1,14 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from './firebase';
 import { LOCAL_ADMIN_KEY } from './data/admin';
+import { pathToTab, tabToPath } from './router';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
 import { BookingSearchWidget, BookingSearch } from './components/BookingSearchWidget';
 import { AboutSection } from './components/AboutSection';
 import { ServicesSection } from './components/ServicesSection';
 import { RoomsPage } from './components/RoomsPage';
-import { GallerySection } from './components/GallerySection';
+import { GalleryPage } from './components/GalleryPage';
 import { TestimonialsSection } from './components/TestimonialsSection';
 import { ContactSection } from './components/ContactSection';
 import { BookingPopup } from './components/BookingPopup';
@@ -26,7 +27,9 @@ import { Star, MapPin, Wallet, Clock3 } from 'lucide-react';
 const FROM_RATE = Math.min(...ROOM_TYPES.map(fromRate));
 
 export function App() {
-  const [activeTab, setActiveTab] = useState<string>('home');
+  const [activeTab, setActiveTab] = useState<string>(() =>
+    typeof window !== 'undefined' ? pathToTab(window.location.pathname) : 'home'
+  );
 
   const [isBookingPopupOpen, setIsBookingPopupOpen] = useState(false);
   const [bookingRoomTypeId, setBookingRoomTypeId] = useState<string | undefined>(undefined);
@@ -49,27 +52,35 @@ export function App() {
   const isAdmin = !!fbUser || localAdmin;
   const adminEmail = fbUser && fbUser !== 'admin' ? fbUser : null;
 
-  const scrollTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+  // Change page + push a real URL
+  const navigate = useCallback((tab: string) => {
+    setActiveTab(tab);
+    const path = tabToPath(tab);
+    if (window.location.pathname !== path) window.history.pushState({}, '', path);
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, []);
+
+  // Back / forward buttons
+  useEffect(() => {
+    const onPop = () => setActiveTab(pathToTab(window.location.pathname));
+    window.addEventListener('popstate', onPop);
+    return () => window.removeEventListener('popstate', onPop);
+  }, []);
 
   useEffect(
     () => onAuthStateChanged(auth, (u) => setFbUser(u ? u.email ?? 'admin' : null)),
     []
   );
 
-  // Deep-link: #admin opens the admin area (login first if needed)
+  // Landing on /admin without access -> show login over the site
   useEffect(() => {
     if (!authResolved) return;
-    if (window.location.hash === '#admin') {
-      if (isAdmin) setActiveTab('admin');
-      else setIsAdminLoginOpen(true);
+    if (activeTab === 'admin' && !isAdmin) {
+      setIsAdminLoginOpen(true);
+      setActiveTab('home');
+      window.history.replaceState({}, '', tabToPath('home'));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [authResolved]);
-
-  // If admin access is lost while on the panel, leave it
-  useEffect(() => {
-    if (!isAdmin && activeTab === 'admin') setActiveTab('home');
-  }, [isAdmin, activeTab]);
+  }, [authResolved, activeTab, isAdmin]);
 
   const handleAdminSignOut = () => {
     signOut(auth).catch(() => {});
@@ -79,8 +90,7 @@ export function App() {
       /* ignore */
     }
     setLocalAdmin(false);
-    setActiveTab('home');
-    scrollTop();
+    navigate('home');
   };
 
   const handleAdminLoginSuccess = () => {
@@ -90,14 +100,12 @@ export function App() {
     } catch {
       setLocalAdmin(true);
     }
-    setActiveTab('admin');
-    scrollTop();
+    navigate('admin');
   };
 
   const goToBookingPage = (roomTypeId?: string) => {
     setBookingRoomTypeId(roomTypeId);
-    setActiveTab('booking');
-    scrollTop();
+    navigate('booking');
   };
 
   const applySearch = (s: BookingSearch) => {
@@ -121,18 +129,11 @@ export function App() {
     goToBookingPage();
   };
 
-  const goToRooms = () => {
-    setActiveTab('rooms');
-    scrollTop();
-  };
+  const goToRooms = () => navigate('rooms');
 
   const openAdmin = () => {
-    if (isAdmin) {
-      setActiveTab('admin');
-      scrollTop();
-    } else {
-      setIsAdminLoginOpen(true);
-    }
+    if (isAdmin) navigate('admin');
+    else setIsAdminLoginOpen(true);
   };
 
   /* ===================== ADMIN (full-screen, no site chrome) ===================== */
@@ -140,10 +141,7 @@ export function App() {
     return (
       <AdminPage
         adminEmail={adminEmail}
-        onExit={() => {
-          setActiveTab('home');
-          scrollTop();
-        }}
+        onExit={() => navigate('home')}
         onSignOut={handleAdminSignOut}
       />
     );
@@ -153,9 +151,8 @@ export function App() {
     <div className="min-h-screen bg-[#fcf9f1] text-[#1c1c17] flex flex-col font-sans selection:bg-[#087ea4] selection:text-white">
       <Navbar
         activeTab={activeTab}
-        setActiveTab={setActiveTab}
+        setActiveTab={navigate}
         onOpenBooking={openBookingPopup}
-        onAdmin={openAdmin}
         isScrolledForce={activeTab !== 'home'}
       />
 
@@ -294,20 +291,14 @@ export function App() {
 
         {activeTab === 'rooms' && (
           <RoomsPage
-            onBack={() => {
-              setActiveTab('home');
-              scrollTop();
-            }}
+            onBack={() => navigate('home')}
             onBook={(roomTypeId) => goToBookingPage(roomTypeId)}
           />
         )}
 
         {activeTab === 'booking' && (
           <BookingPage
-            onBack={() => {
-              setActiveTab('home');
-              scrollTop();
-            }}
+            onBack={() => navigate('home')}
             initialRoomTypeId={bookingRoomTypeId}
             initialCheckIn={checkIn}
             initialCheckOut={checkOut}
@@ -315,11 +306,7 @@ export function App() {
           />
         )}
 
-        {activeTab === 'gallery' && (
-          <div className="pt-20 md:pt-24">
-            <GallerySection />
-          </div>
-        )}
+        {activeTab === 'gallery' && <GalleryPage onBack={() => navigate('home')} />}
 
         {activeTab === 'testimonials' && (
           <div className="pt-20 md:pt-24">
@@ -347,7 +334,7 @@ export function App() {
       />
 
       <Footer
-        setActiveTab={setActiveTab}
+        setActiveTab={navigate}
         onOpenBooking={openBookingPopup}
         onAdmin={openAdmin}
       />

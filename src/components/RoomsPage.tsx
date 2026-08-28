@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ArrowLeft, X, ChevronLeft, ChevronRight, CalendarCheck, Star, MapPin } from 'lucide-react';
 import { ROOM_TYPES, inr } from '../data/rooms';
 import { RESORT_ADDRESS } from '../data/contact';
+import ScrollExpand from './ScrollExpand';
 
 interface RoomsPageProps {
   onBack: () => void;
@@ -26,40 +27,48 @@ export const RoomsPage: React.FC<RoomsPageProps> = ({ onBack, onBook }) => {
 
   return (
     <div className="bg-[#fcf9f1]">
-      {/* ===== Hero banner ===== */}
-      <section className="relative h-[52vh] min-h-[360px] max-h-[520px] w-full overflow-hidden flex items-end">
-        <img
+      {/* Back to Home — fixed so it stays reachable during the scroll-expand */}
+      <button
+        onClick={onBack}
+        className="fixed top-24 md:top-28 left-4 md:left-8 z-40 flex items-center gap-2 bg-white/90 hover:bg-white text-[#1c1c17] text-sm font-semibold px-4 py-2.5 rounded-full shadow-md backdrop-blur transition-colors"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Back to Home
+      </button>
+
+      {/* ===== Scroll-to-expand hero ===== */}
+      <div className="relative min-h-[100svh] bg-[#fcf9f1]">
+        <ScrollExpand
+          mediaType="image"
           src="/images/funcituy_rooms.JPG"
           alt="Fun City rooms"
-          className="absolute inset-0 w-full h-full object-cover object-center"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/25" />
-
-        {/* Back to Home */}
-        <button
-          onClick={onBack}
-          className="absolute top-24 md:top-28 left-4 md:left-12 z-10 flex items-center gap-2 bg-white/90 hover:bg-white text-[#1c1c17] text-sm font-semibold px-4 py-2.5 rounded-full shadow-md backdrop-blur transition-colors"
+          title="Rooms & Suites"
+          scrollHint="Scroll to open the view"
+          useWindowScroll
+          startWidth={44}
+          startHeight={58}
+          startRadius={28}
+          endRadius={0}
+          mediaZoom={1.28}
+          scrollDistance={1.1}
+          holdDistance={0.3}
+          overlayScrim={0.55}
         >
-          <ArrowLeft className="w-4 h-4" />
-          Back to Home
-        </button>
-
-        <div className="relative z-10 max-w-[1280px] mx-auto w-full px-4 md:px-12 pb-10 md:pb-14 text-white">
-          <span className="text-xs font-bold uppercase tracking-[0.22em] text-white/80">
-            Fun City · Lovedale, Ooty
-          </span>
-          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight mt-2">
-            Rooms &amp; Suites
-          </h1>
-          <p className="max-w-xl text-white/85 text-sm md:text-base mt-3 leading-relaxed">
-            A blend of modern amenities and classic hospitality. Choose the space that fits your stay.
-          </p>
-          <p className="flex items-start gap-1.5 text-white/75 text-xs md:text-sm mt-3 max-w-md">
-            <MapPin className="w-4 h-4 flex-shrink-0 mt-0.5" />
-            {RESORT_ADDRESS}
-          </p>
-        </div>
-      </section>
+          <div className="max-w-xl space-y-3">
+            <span className="text-[11px] font-bold uppercase tracking-[0.22em] text-white/80">
+              Fun City · Lovedale, Ooty
+            </span>
+            <p className="text-white/85 text-sm md:text-lg">
+              A blend of modern amenities and classic hospitality — choose the space that fits your
+              stay.
+            </p>
+            <p className="flex items-center gap-1.5 text-white/70 text-xs md:text-sm">
+              <MapPin className="w-4 h-4 flex-shrink-0" />
+              {RESORT_ADDRESS}
+            </p>
+          </div>
+        </ScrollExpand>
+      </div>
 
       {/* ===== Category sections ===== */}
       <div className="max-w-[1280px] mx-auto px-4 md:px-12 py-14 md:py-20 space-y-16 md:space-y-24">
