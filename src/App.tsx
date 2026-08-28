@@ -17,13 +17,15 @@ import { AdminLoginModal } from './components/AdminLoginModal';
 import { AdminPage } from './components/AdminPage';
 import { Footer } from './components/Footer';
 import { GuestValue, DEFAULT_GUESTS } from './components/GuestSelector';
-import { RESORT_ROOMS, TESTIMONIALS } from './data/resortData';
-import { Room } from './types';
-import { Star } from 'lucide-react';
+import { TESTIMONIALS } from './data/resortData';
+import { ROOM_TYPES, fromRate, inr } from './data/rooms';
+import { RESORT_NAME } from './data/contact';
+import { Star, MapPin, Wallet, Clock3 } from 'lucide-react';
+
+const FROM_RATE = Math.min(...ROOM_TYPES.map(fromRate));
 
 export function App() {
   const [activeTab, setActiveTab] = useState<string>('home');
-  const [selectedRoom] = useState<Room>(RESORT_ROOMS[0]);
 
   const [isBookingPopupOpen, setIsBookingPopupOpen] = useState(false);
   const [bookingRoomTypeId, setBookingRoomTypeId] = useState<string | undefined>(undefined);
@@ -163,18 +165,18 @@ export function App() {
             <BookingSearchWidget onSearch={handleSearch} />
             <ServicesSection onSelectService={() => {}} />
 
-            {/* Featured Suite Spotlight Showcase */}
+            {/* Property Spotlight */}
             <section className="py-12 md:py-20 px-4 md:px-12 max-w-[1280px] mx-auto">
               <div className="bg-white rounded-[28px] overflow-hidden sunlight-shadow border border-[#e5e2db] grid grid-cols-1 lg:grid-cols-12 gap-0">
                 <div className="lg:col-span-7 relative h-[320px] sm:h-[400px] lg:h-auto overflow-hidden group">
                   <img
-                    src={selectedRoom.mainImage}
-                    alt={selectedRoom.title}
+                    src="/images/funcity_reception.JPG"
+                    alt="Fun City Resorts reception, Lovedale, Ooty"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
                   <div className="absolute top-5 left-5 bg-white/95 backdrop-blur-md text-[#006483] text-xs font-bold px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow">
-                    Featured Signature Suite
+                    Our Property
                   </div>
                 </div>
 
@@ -183,30 +185,51 @@ export function App() {
                     <div className="flex items-center gap-2">
                       <div className="flex items-center text-amber-500 font-semibold text-sm">
                         <Star className="w-4 h-4 fill-current mr-1" />
-                        <span>{selectedRoom.rating}</span>
+                        <span>3.7</span>
                       </div>
                       <span className="text-[#bec8ce]">•</span>
-                      <span className="text-xs text-[#6f787e]">
-                        {selectedRoom.reviewsCount} verified reviews
-                      </span>
+                      <span className="text-xs text-[#6f787e]">413 guest reviews</span>
                     </div>
 
                     <h3 className="text-2xl md:text-3xl font-extrabold text-[#1c1c17] tracking-tight">
-                      {selectedRoom.title}
+                      {RESORT_NAME}
                     </h3>
 
-                    <p className="text-sm text-[#3f484e] leading-relaxed line-clamp-4">
-                      {selectedRoom.description}
+                    <p className="text-sm text-[#3f484e] leading-relaxed">
+                      Located in Lovedale, right by Love Dale Junction on Coonoor Road, Fun City
+                      Resorts offers spotless Couple and Family rooms with 24&#8209;hour hot water,
+                      free Wi-Fi, air conditioning and prompt room service. Our reception is staffed
+                      around the clock, and the toy&#8209;train station, Ooty Lake and the Botanical
+                      Garden are all a short drive away — a comfortable, well&#8209;connected base for
+                      your hill&#8209;station stay.
                     </p>
 
                     <div className="grid grid-cols-2 gap-3 pt-2">
-                      <div className="bg-[#f6f3eb] p-2.5 rounded-xl text-center sm:text-left">
-                        <span className="text-[10px] uppercase font-bold text-[#6f787e] block">Size</span>
-                        <span className="text-xs font-bold text-[#1c1c17]">{selectedRoom.specs.sqft}</span>
+                      <div className="bg-[#f6f3eb] p-3 rounded-xl">
+                        <span className="text-[10px] uppercase font-bold text-[#6f787e] flex items-center gap-1">
+                          <Wallet className="w-3 h-3" /> Tariff
+                        </span>
+                        <span className="text-xs font-bold text-[#1c1c17]">
+                          From {inr(FROM_RATE)} / night
+                        </span>
                       </div>
-                      <div className="bg-[#f6f3eb] p-2.5 rounded-xl text-center sm:text-left">
-                        <span className="text-[10px] uppercase font-bold text-[#6f787e] block">Occupancy</span>
-                        <span className="text-xs font-bold text-[#1c1c17]">{selectedRoom.specs.guests}</span>
+                      <div className="bg-[#f6f3eb] p-3 rounded-xl">
+                        <span className="text-[10px] uppercase font-bold text-[#6f787e] flex items-center gap-1">
+                          <MapPin className="w-3 h-3" /> Location
+                        </span>
+                        <span className="text-xs font-bold text-[#1c1c17]">Lovedale, Ooty</span>
+                      </div>
+                      <div className="bg-[#f6f3eb] p-3 rounded-xl">
+                        <span className="text-[10px] uppercase font-bold text-[#6f787e] flex items-center gap-1">
+                          <Clock3 className="w-3 h-3" /> Reception
+                        </span>
+                        <span className="text-xs font-bold text-[#1c1c17]">24 hours</span>
+                      </div>
+                      <div className="bg-[#f6f3eb] p-3 rounded-xl">
+                        <span className="text-[10px] uppercase font-bold text-[#6f787e] block">
+                          Rooms
+                        </span>
+                        <span className="text-xs font-bold text-[#1c1c17]">Couple &amp; Family</span>
                       </div>
                     </div>
                   </div>
@@ -222,7 +245,7 @@ export function App() {
                       onClick={openBookingPopup}
                       className="w-full sm:w-auto bg-[#f1eee6] hover:bg-[#ebe8e0] text-[#006483] font-bold text-sm py-3.5 px-6 rounded-full text-center transition-colors cursor-pointer"
                     >
-                      Instant Reserve
+                      Book Now
                     </button>
                   </div>
                 </div>
