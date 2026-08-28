@@ -22,7 +22,7 @@ export const GallerySection: React.FC = () => {
         </h2>
         <div className="w-20 h-2 bg-[#35BFD0] rounded-full mt-3 mb-4" />
         <p className="max-w-2xl text-[#3f484e] text-base md:text-lg leading-relaxed">
-          Glimpse into the pristine coastal sanctuary of The Relax Beach. Every frame captures the warm harmony of golden sands and turquoise waters.
+          Glimpse into the pristine coastal sanctuary of Funcity Resort. Every frame captures the warm harmony of golden sands and turquoise waters.
         </p>
 
         {/* Category Filter Pills */}

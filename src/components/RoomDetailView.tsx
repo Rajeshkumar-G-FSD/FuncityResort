@@ -413,7 +413,7 @@ export const RoomDetailView: React.FC<RoomDetailViewProps> = ({
               More to Explore
             </h2>
             <p className="text-[#6f787e] text-sm mt-1">
-              Discover other exquisite suites & beach villas at The Relax Beach.
+              Discover other exquisite suites & beach villas at Funcity Resort.
             </p>
           </div>
         </div>

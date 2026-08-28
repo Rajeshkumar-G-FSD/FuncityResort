@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Sailboat, Phone, Menu, X, CalendarCheck } from 'lucide-react';
+import { Phone, Menu, X, CalendarCheck } from 'lucide-react';
 
 interface NavbarProps {
   activeTab: string;
@@ -31,6 +31,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
   const navItems = [
     { id: 'home', label: 'Home' },
+    { id: 'about', label: 'About Us' },
     { id: 'services', label: 'Services' },
     { id: 'rooms', label: 'Rooms' },
     { id: 'gallery', label: 'Gallery' },
@@ -62,21 +63,15 @@ export const Navbar: React.FC<NavbarProps> = ({
           className="flex items-center gap-2.5 text-left group focus:outline-none"
         >
           <div
-            className={`w-9 h-9 rounded-full flex items-center justify-center transition-colors ${
+            className={`w-9 h-9 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-colors ${
               effectiveScrolled
                 ? 'bg-[#006483]/10 text-[#006483]'
                 : 'bg-white/20 backdrop-blur text-white group-hover:bg-white/30'
             }`}
           >
-            <Sailboat className="w-5 h-5 transition-transform group-hover:scale-110" />
+            <img src="/images/funcity_logo.png" alt="Funcity logo" className="w-6 h-6 md:w-8 md:h-8 object-contain" />
           </div>
-          <span
-            className={`text-xl md:text-2xl font-bold tracking-tight transition-colors ${
-              effectiveScrolled ? 'text-[#006483]' : 'text-white drop-shadow-md'
-            }`}
-          >
-            The Relax Beach
-          </span>
+          <span className="sr-only">Funcity Resort</span>
         </button>
 
         {/* Desktop Navigation Links */}

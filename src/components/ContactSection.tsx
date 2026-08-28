@@ -89,8 +89,8 @@ export const ContactSection: React.FC = () => {
                   <CheckCircle2 className="w-8 h-8" />
                 </div>
                 <h3 className="text-xl font-bold text-[#1c1c17]">Message Received!</h3>
-                <p className="text-[#3f484e] text-sm mt-2 max-w-md mx-auto">
-                  Thank you for reaching out to The Relax Beach. Our guest relations team will respond to your inquiry within 2-4 hours.
+                  <p className="text-[#3f484e] text-sm mt-2 max-w-md mx-auto">
+                  Thank you for reaching out to Funcity Resort. Our guest relations team will respond to your inquiry within 2-4 hours.
                 </p>
                 <button
                   onClick={() => setSubmitted(false)}
@@ -228,16 +228,16 @@ export const ContactSection: React.FC = () => {
                       Email Inquiries
                     </h4>
                     <a
-                      href="mailto:reservations@therelaxbeach.com"
+                      href="mailto:reservations@funcityresort.com"
                       className="text-sm font-semibold text-[#1c1c17] hover:text-[#087ea4] block mt-0.5"
                     >
-                      reservations@therelaxbeach.com
+                      reservations@funcityresort.com
                     </a>
                     <a
-                      href="mailto:info@therelaxbeach.com"
+                      href="mailto:info@funcityresort.com"
                       className="text-xs text-[#6f787e] hover:text-[#087ea4] block"
                     >
-                      info@therelaxbeach.com
+                      info@funcityresort.com
                     </a>
                   </div>
                 </div>
@@ -268,7 +268,7 @@ export const ContactSection: React.FC = () => {
                     <div className="w-8 h-8 rounded-full bg-[#087ea4] text-white flex items-center justify-center mb-1.5 shadow">
                       <MapPin className="w-4 h-4" />
                     </div>
-                    <span className="text-xs font-bold text-[#1c1c17]">The Relax Beach Resort</span>
+                    <span className="text-xs font-bold text-[#1c1c17]">Funcity Resort</span>
                     <span className="text-[11px] text-[#6f787e] mt-0.5">Baku Seaside Promenade</span>
                     <a
                       href="https://maps.google.com"

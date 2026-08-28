@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import {
-  Sailboat,
   Phone,
   Mail,
   MapPin,
   Send,
   CheckCircle2,
-  Heart
 } from 'lucide-react';
 
 interface FooterProps {
@@ -42,12 +40,10 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenBooking }) =
               onClick={() => scrollToTopAndSet('home')}
               className="flex items-center gap-2.5 cursor-pointer group"
             >
-              <div className="w-9 h-9 rounded-full bg-[#006483]/10 text-[#006483] flex items-center justify-center group-hover:bg-[#006483]/20 transition-colors">
-                <Sailboat className="w-5 h-5" />
+              <div className="w-9 h-9 md:w-12 md:h-12 rounded-full bg-[#006483]/10 text-[#006483] flex items-center justify-center group-hover:bg-[#006483]/20 transition-colors">
+                <img src="/images/funcity_logo.png" alt="Funcity logo" className="w-6 h-6 md:w-8 md:h-8 object-contain" />
               </div>
-              <span className="text-2xl font-extrabold text-[#006483] tracking-tight">
-                The Relax Beach
-              </span>
+              <span className="sr-only">Funcity Resort</span>
             </div>
 
             <p className="text-sm text-[#3f484e] leading-relaxed max-w-sm">
@@ -199,10 +195,10 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenBooking }) =
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-[#087ea4] flex-shrink-0" />
                 <a
-                  href="mailto:reservations@therelaxbeach.com"
+                  href="mailto:reservations@funcityresort.com"
                   className="hover:text-[#087ea4] truncate"
                 >
-                  reservations@therelaxbeach.com
+                  reservations@funcityresort.com
                 </a>
               </li>
             </ul>
@@ -211,7 +207,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenBooking }) =
 
         {/* Bottom Bar */}
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#6f787e]">
-          <p>© {new Date().getFullYear()} The Relax Beach Resort. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Funcity Resort. All rights reserved.</p>
           <div className="flex items-center gap-6">
             <span className="hover:text-[#087ea4] cursor-pointer">Privacy Policy</span>
             <span className="hover:text-[#087ea4] cursor-pointer">Terms of Service</span>

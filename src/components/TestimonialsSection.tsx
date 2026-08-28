@@ -12,7 +12,7 @@ export const TestimonialsSection: React.FC = () => {
         </h2>
         <div className="w-20 h-2 bg-[#35BFD0] rounded-full mt-3 mb-4" />
         <p className="max-w-2xl text-[#3f484e] text-base md:text-lg leading-relaxed">
-          Read genuine stories and memories shared by travelers from around the world who found their peaceful retreat at The Relax Beach.
+          Read genuine stories and memories shared by travelers from around the world who found their peaceful retreat at Funcity Resort.
         </p>
       </div>
 

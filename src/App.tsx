@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { HeroSection } from './components/HeroSection';
 import { BookingSearchWidget } from './components/BookingSearchWidget';
+import { AboutSection } from './components/AboutSection';
 import { ServicesSection } from './components/ServicesSection';
 import { RoomDetailView } from './components/RoomDetailView';
 import { GallerySection } from './components/GallerySection';
@@ -186,6 +187,13 @@ export function App() {
                 </div>
               </div>
             </section>
+          </div>
+        )}
+
+        {/* ================= 1b. ABOUT US TAB ================= */}
+        {activeTab === 'about' && (
+          <div className="pt-20 md:pt-24">
+            <AboutSection onOpenBooking={() => handleOpenBooking(selectedRoom)} />
           </div>
         )}
 

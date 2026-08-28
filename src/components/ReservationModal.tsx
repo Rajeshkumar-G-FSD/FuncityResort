@@ -94,9 +94,12 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({
           <div>
             {/* Modal Header */}
             <div className="p-6 md:p-8 bg-white border-b border-[#e5e2db] rounded-t-[28px]">
-              <div className="flex items-center gap-2 text-xs font-bold text-[#087ea4] uppercase tracking-wider mb-1">
-                <Sparkles className="w-3.5 h-3.5" />
-                <span>Luxury Coastal Reservation</span>
+              <div className="flex flex-col items-center gap-2 mb-3">
+                <img src="/images/funcity_logo.png" alt="Funcity logo" className="w-12 h-12 md:w-20 md:h-20 object-contain" />
+                <div className="flex items-center gap-2 text-xs font-bold text-[#087ea4] uppercase tracking-wider">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>Luxury Coastal Reservation</span>
+                </div>
               </div>
               <h2 className="text-2xl md:text-3xl font-extrabold text-[#1c1c17] tracking-tight">
                 Reserve Your Getaway
@@ -326,7 +329,7 @@ export const ReservationModal: React.FC<ReservationModalProps> = ({
                 We Can't Wait to Welcome You!
               </h2>
               <p className="text-sm text-[#3f484e] max-w-md mx-auto mt-2">
-                Your reservation at The Relax Beach has been registered with priority concierge status.
+                Your reservation has been registered with priority concierge status.
               </p>
             </div>
 
