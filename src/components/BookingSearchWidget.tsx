@@ -1,5 +1,8 @@
-import React, { useState } from 'react';
-import { Calendar, Users, BedDouble, Search, ChevronDown, Check } from 'lucide-react';
+import React, { useRef, useState } from 'react';
+import { Calendar, Search } from 'lucide-react';
+import { GuestSelector, GuestValue, DEFAULT_GUESTS, summariseGuests } from './GuestSelector';
+import { todayISO, addDaysISO, formatDate } from '../utils/dates';
+import { openNativePicker } from '../utils/showPicker';
 
 interface BookingSearchWidgetProps {
   onSearch: (criteria: {
@@ -11,179 +14,165 @@ interface BookingSearchWidgetProps {
 }
 
 export const BookingSearchWidget: React.FC<BookingSearchWidgetProps> = ({ onSearch }) => {
-  const [checkIn, setCheckIn] = useState('24 Oct, 2024');
-  const [checkOut, setCheckOut] = useState('28 Oct, 2024');
-  const [guests, setGuests] = useState('2 Adults, 1 Child');
-  const [rooms, setRooms] = useState('1 Room');
-  
-  const [guestDropdownOpen, setGuestDropdownOpen] = useState(false);
-  const [roomDropdownOpen, setRoomDropdownOpen] = useState(false);
+  const [guestValue, setGuestValue] = useState<GuestValue>(DEFAULT_GUESTS);
+  const [checkIn, setCheckIn] = useState('');
+  const [checkOut, setCheckOut] = useState('');
 
-  const guestOptions = [
-    '1 Adult',
-    '2 Adults',
-    '2 Adults, 1 Child',
-    '2 Adults, 2 Children',
-    '4+ Guests / Family',
-  ];
+  const checkInRef = useRef<HTMLInputElement>(null);
+  const checkOutRef = useRef<HTMLInputElement>(null);
 
-  const roomOptions = ['1 Room', '2 Rooms', '3 Rooms', '4+ Suites & Villas'];
+  const today = todayISO();
+  const minCheckOut = checkIn ? addDaysISO(checkIn, 1) : addDaysISO(today, 1);
+
+  const handleCheckInChange = (value: string) => {
+    setCheckIn(value);
+    // Check-out must always be after check-in
+    if (value && checkOut && checkOut <= value) setCheckOut('');
+    // Guide the user straight to picking check-out
+    if (value) openNativePicker(checkOutRef.current);
+  };
+
+  // Progress: guests (always ready) -> check-in -> check-out
+  const progress = 1 + (checkIn ? 1 : 0) + (checkOut ? 1 : 0);
+  const helperText = [
+    '',
+    'Now pick your check-in date',
+    'Now pick your check-out date',
+    "You're all set — hit search",
+  ][progress];
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSearch({
       checkIn,
       checkOut,
-      guests,
-      rooms,
+      guests: summariseGuests(guestValue),
+      rooms: '1 Room',
     });
   };
 
   return (
-    <section className="relative z-20 -mt-16 md:-mt-24 px-4 md:px-12 max-w-[1280px] mx-auto mb-16 md:mb-24">
-      <div className="bg-[#ffffff] rounded-[24px] p-6 md:p-8 sunlight-shadow border border-[#e5e2db] flex flex-col md:flex-row items-center gap-5 justify-between w-full transition-all">
-        <form
-          onSubmit={handleSearchSubmit}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 w-full flex-grow"
-        >
-          {/* Check In Input */}
-          <div className="flex flex-col gap-1.5 relative group">
-            <label className="text-[12px] font-semibold text-[#3f484e] uppercase tracking-wider">
-              Check In
-            </label>
-            <div className="flex items-center gap-2.5 border-b border-[#bec8ce] pb-2 group-focus-within:border-[#087ea4] transition-colors">
-              <Calendar className="w-5 h-5 text-[#087ea4] flex-shrink-0" />
-              <input
-                type="text"
-                value={checkIn}
-                onChange={(e) => setCheckIn(e.target.value)}
-                className="bg-transparent border-none p-0 focus:outline-none focus:ring-0 text-[16px] font-medium text-[#1c1c17] w-full placeholder:text-[#6f787e]"
-                placeholder="24 Oct, 2024"
-              />
-            </div>
+    <section className="relative z-20 mt-8 md:mt-12 px-4 md:px-12 max-w-[1280px] mx-auto mb-16 md:mb-24">
+      <div className="bg-[#fdfbf6] rounded-[28px] p-4 md:p-5 shadow-[0_24px_60px_-20px_rgba(120,95,30,0.25)] border border-[#ece3cf]">
+        <div className="flex flex-col md:flex-row md:items-stretch">
+          {/* GUESTS — first */}
+          <div className="relative flex-1 min-w-0 rounded-xl border-b md:border-b-0 md:border-r border-[#ece3cf] hover:bg-[#f7f1e2]/60 transition-colors">
+            <GuestSelector
+              value={guestValue}
+              onChange={setGuestValue}
+              onApply={() => openNativePicker(checkInRef.current)}
+            />
           </div>
 
-          {/* Check Out Input */}
-          <div className="flex flex-col gap-1.5 relative group">
-            <label className="text-[12px] font-semibold text-[#3f484e] uppercase tracking-wider">
-              Check Out
-            </label>
-            <div className="flex items-center gap-2.5 border-b border-[#bec8ce] pb-2 group-focus-within:border-[#087ea4] transition-colors">
-              <Calendar className="w-5 h-5 text-[#087ea4] flex-shrink-0" />
-              <input
-                type="text"
-                value={checkOut}
-                onChange={(e) => setCheckOut(e.target.value)}
-                className="bg-transparent border-none p-0 focus:outline-none focus:ring-0 text-[16px] font-medium text-[#1c1c17] w-full placeholder:text-[#6f787e]"
-                placeholder="28 Oct, 2024"
-              />
-            </div>
-          </div>
-
-          {/* Guests Selector */}
-          <div className="flex flex-col gap-1.5 relative">
-            <label className="text-[12px] font-semibold text-[#3f484e] uppercase tracking-wider">
-              Guests
-            </label>
-            <div
-              onClick={() => {
-                setGuestDropdownOpen(!guestDropdownOpen);
-                setRoomDropdownOpen(false);
-              }}
-              className="flex items-center justify-between border-b border-[#bec8ce] pb-2 cursor-pointer hover:border-[#087ea4] transition-colors"
-            >
-              <div className="flex items-center gap-2.5 overflow-hidden">
-                <Users className="w-5 h-5 text-[#087ea4] flex-shrink-0" />
-                <span className="text-[16px] font-medium text-[#1c1c17] truncate">
-                  {guests}
+          {/* CHECK-IN — calendar opens from today */}
+          <div className="relative flex-1 min-w-0 rounded-xl border-b md:border-b-0 md:border-r border-[#ece3cf] hover:bg-[#f7f1e2]/60 transition-colors">
+            <label className="w-full flex items-center gap-3.5 px-4 py-4 md:px-5 cursor-pointer">
+              <Calendar className="w-5 h-5 text-[#a6893f] flex-shrink-0" strokeWidth={1.75} />
+              <span className="flex-grow min-w-0">
+                <span className="block text-[11px] font-bold uppercase tracking-[0.18em] text-[#8a7643]">
+                  Check-In
                 </span>
-              </div>
-              <ChevronDown
-                className={`w-4 h-4 text-[#6f787e] transition-transform ${
-                  guestDropdownOpen ? 'rotate-180 text-[#087ea4]' : ''
-                }`}
-              />
-            </div>
-
-            {guestDropdownOpen && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-[#e5e2db] py-2 z-30 animate-in fade-in zoom-in-95 duration-150">
-                {guestOptions.map((opt) => (
-                  <button
-                    key={opt}
-                    type="button"
-                    onClick={() => {
-                      setGuests(opt);
-                      setGuestDropdownOpen(false);
-                    }}
-                    className={`w-full text-left px-4 py-2 text-sm flex items-center justify-between hover:bg-[#f6f3eb] transition-colors ${
-                      guests === opt ? 'text-[#087ea4] font-semibold bg-[#f6f3eb]/60' : 'text-[#1c1c17]'
+                <span className="relative block">
+                  <span
+                    className={`block text-[17px] font-semibold truncate ${
+                      checkIn ? 'text-[#2f2a20]' : 'text-[#b8a986]'
                     }`}
                   >
-                    <span>{opt}</span>
-                    {guests === opt && <Check className="w-4 h-4 text-[#087ea4]" />}
-                  </button>
-                ))}
-              </div>
-            )}
+                    {checkIn ? formatDate(checkIn) : 'Select Date'}
+                  </span>
+                  <input
+                    ref={checkInRef}
+                    type="date"
+                    value={checkIn}
+                    min={today}
+                    onChange={(e) => handleCheckInChange(e.target.value)}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                    aria-label="Check-in date"
+                  />
+                </span>
+              </span>
+            </label>
           </div>
 
-          {/* Rooms Selector */}
-          <div className="flex flex-col gap-1.5 relative">
-            <label className="text-[12px] font-semibold text-[#3f484e] uppercase tracking-wider">
-              Rooms
-            </label>
-            <div
-              onClick={() => {
-                setRoomDropdownOpen(!roomDropdownOpen);
-                setGuestDropdownOpen(false);
-              }}
-              className="flex items-center justify-between border-b border-[#bec8ce] pb-2 cursor-pointer hover:border-[#087ea4] transition-colors"
+          {/* CHECK-OUT — enabled after check-in, opens from the next day */}
+          <div
+            className={`relative flex-1 min-w-0 rounded-xl border-b md:border-b-0 md:border-r border-[#ece3cf] transition-colors ${
+              checkIn ? 'hover:bg-[#f7f1e2]/60' : 'opacity-60'
+            }`}
+          >
+            <label
+              className={`w-full flex items-center gap-3.5 px-4 py-4 md:px-5 ${
+                checkIn ? 'cursor-pointer' : 'cursor-not-allowed'
+              }`}
             >
-              <div className="flex items-center gap-2.5 overflow-hidden">
-                <BedDouble className="w-5 h-5 text-[#087ea4] flex-shrink-0" />
-                <span className="text-[16px] font-medium text-[#1c1c17] truncate">
-                  {rooms}
+              <Calendar className="w-5 h-5 text-[#a6893f] flex-shrink-0" strokeWidth={1.75} />
+              <span className="flex-grow min-w-0">
+                <span className="block text-[11px] font-bold uppercase tracking-[0.18em] text-[#8a7643]">
+                  Check-Out
                 </span>
-              </div>
-              <ChevronDown
-                className={`w-4 h-4 text-[#6f787e] transition-transform ${
-                  roomDropdownOpen ? 'rotate-180 text-[#087ea4]' : ''
-                }`}
-              />
-            </div>
-
-            {roomDropdownOpen && (
-              <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-[#e5e2db] py-2 z-30 animate-in fade-in zoom-in-95 duration-150">
-                {roomOptions.map((opt) => (
-                  <button
-                    key={opt}
-                    type="button"
-                    onClick={() => {
-                      setRooms(opt);
-                      setRoomDropdownOpen(false);
-                    }}
-                    className={`w-full text-left px-4 py-2 text-sm flex items-center justify-between hover:bg-[#f6f3eb] transition-colors ${
-                      rooms === opt ? 'text-[#087ea4] font-semibold bg-[#f6f3eb]/60' : 'text-[#1c1c17]'
+                <span className="relative block">
+                  <span
+                    className={`block text-[17px] font-semibold truncate ${
+                      checkOut ? 'text-[#2f2a20]' : 'text-[#b8a986]'
                     }`}
                   >
-                    <span>{opt}</span>
-                    {rooms === opt && <Check className="w-4 h-4 text-[#087ea4]" />}
-                  </button>
-                ))}
-              </div>
-            )}
+                    {checkOut ? formatDate(checkOut) : checkIn ? 'Select Date' : 'Check-in first'}
+                  </span>
+                  <input
+                    ref={checkOutRef}
+                    type="date"
+                    value={checkOut}
+                    min={minCheckOut}
+                    disabled={!checkIn}
+                    onChange={(e) => setCheckOut(e.target.value)}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
+                    aria-label="Check-out date"
+                  />
+                </span>
+              </span>
+            </label>
           </div>
-        </form>
 
-        {/* Search CTA Button */}
-        <button
-          onClick={handleSearchSubmit}
-          className="w-full md:w-auto bg-[#087ea4] hover:bg-[#006483] text-white font-semibold text-[15px] px-8 py-3.5 md:py-4 rounded-[16px] floating-shadow hover:scale-105 active:scale-95 transition-all whitespace-nowrap mt-2 md:mt-0 flex items-center justify-center gap-2.5 cursor-pointer"
-        >
-          <Search className="w-5 h-5" />
-          <span>Search</span>
-        </button>
+          {/* SEARCH */}
+          <div className="pt-3 md:pt-0 md:pl-4 flex md:items-center">
+            <button
+              onClick={handleSearchSubmit}
+              aria-label="Search availability"
+              className="w-full md:w-16 md:h-16 h-14 rounded-2xl flex items-center justify-center text-white bg-gradient-to-b from-[#d8b348] to-[#a9801d] shadow-[0_16px_30px_-10px_rgba(160,120,25,0.5)] hover:brightness-105 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer"
+            >
+              <Search className="w-6 h-6" strokeWidth={2.25} />
+            </button>
+          </div>
+        </div>
+
+        {/* Step indicator */}
+        <div className="flex items-center justify-center gap-0 pt-5 pb-1">
+          {[1, 2, 3].map((n, i) => (
+            <React.Fragment key={n}>
+              <span
+                className={`w-8 h-8 rounded-full border flex items-center justify-center text-[13px] font-semibold transition-colors ${
+                  progress >= n
+                    ? 'border-[#a6893f] bg-[#a6893f] text-white'
+                    : 'border-[#d8cbac] text-[#b8a986]'
+                }`}
+              >
+                {n}
+              </span>
+              {i < 2 && (
+                <span
+                  className={`h-px w-12 sm:w-20 transition-colors ${
+                    progress > n ? 'bg-[#a6893f]' : 'bg-[#d8cbac]'
+                  }`}
+                />
+              )}
+            </React.Fragment>
+          ))}
+        </div>
       </div>
+
+      {helperText && (
+        <p className="text-center text-[13px] md:text-sm text-[#8a7f66] mt-4">{helperText}</p>
+      )}
     </section>
   );
 };

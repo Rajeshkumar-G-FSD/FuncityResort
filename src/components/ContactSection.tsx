@@ -12,6 +12,13 @@ import {
   Compass
 } from 'lucide-react';
 import { TESTIMONIALS } from '../data/resortData';
+import {
+  RESORT_ADDRESS,
+  RESORT_PHONES,
+  RESORT_EMAIL,
+  RESORT_MAPS_URL,
+  RESORT_WHATSAPP,
+} from '../data/contact';
 
 export const ContactSection: React.FC = () => {
   const [formData, setFormData] = useState({
@@ -136,7 +143,7 @@ export const ContactSection: React.FC = () => {
                     </label>
                     <input
                       type="tel"
-                      placeholder="+994 50 000 00 00"
+                      placeholder="+91 90000 00000"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                       className="w-full bg-[#fcf9f1]/70 border border-[#bec8ce] rounded-xl px-4 py-3.5 text-sm text-[#1c1c17] focus:outline-none focus:border-[#087ea4] focus:bg-white transition-all"
@@ -186,13 +193,13 @@ export const ContactSection: React.FC = () => {
                   </div>
                   <div>
                     <h4 className="text-xs font-bold uppercase tracking-wider text-[#6f787e]">
-                      Resort Location
+                      Hotel Location
                     </h4>
                     <p className="text-sm font-semibold text-[#1c1c17] mt-0.5">
-                      Baku Seaside Boulevard & Coastal Bay, Azerbaijan
+                      {RESORT_ADDRESS}
                     </p>
                     <p className="text-xs text-[#6f787e] mt-0.5">
-                      123 Coastal Breeze Way, Azure Bay
+                      Near Love Dale Junction, Coonoor Road
                     </p>
                   </div>
                 </div>
@@ -204,16 +211,27 @@ export const ContactSection: React.FC = () => {
                   </div>
                   <div>
                     <h4 className="text-xs font-bold uppercase tracking-wider text-[#6f787e]">
-                      Phone Number
+                      WhatsApp &amp; Phone
                     </h4>
                     <a
-                      href="tel:+994500000000"
-                      className="text-sm font-bold text-[#087ea4] hover:underline block mt-0.5"
+                      href={RESORT_WHATSAPP.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-sm font-bold text-[#25D366] hover:underline block mt-0.5"
                     >
-                      +994 50 000 00 00
+                      WhatsApp {RESORT_WHATSAPP.display}
                     </a>
+                    {RESORT_PHONES.map((p) => (
+                      <a
+                        key={p.tel}
+                        href={`tel:${p.tel}`}
+                        className="text-sm font-semibold text-[#087ea4] hover:underline block mt-0.5"
+                      >
+                        {p.display}
+                      </a>
+                    ))}
                     <span className="text-xs text-[#6f787e]">
-                      Available 24/7 for VIP reservations
+                      Available 24/7 for reservations
                     </span>
                   </div>
                 </div>
@@ -228,16 +246,10 @@ export const ContactSection: React.FC = () => {
                       Email Inquiries
                     </h4>
                     <a
-                      href="mailto:reservations@funcityresort.com"
+                      href={`mailto:${RESORT_EMAIL}`}
                       className="text-sm font-semibold text-[#1c1c17] hover:text-[#087ea4] block mt-0.5"
                     >
-                      reservations@funcityresort.com
-                    </a>
-                    <a
-                      href="mailto:info@funcityresort.com"
-                      className="text-xs text-[#6f787e] hover:text-[#087ea4] block"
-                    >
-                      info@funcityresort.com
+                      {RESORT_EMAIL}
                     </a>
                   </div>
                 </div>
@@ -268,10 +280,10 @@ export const ContactSection: React.FC = () => {
                     <div className="w-8 h-8 rounded-full bg-[#087ea4] text-white flex items-center justify-center mb-1.5 shadow">
                       <MapPin className="w-4 h-4" />
                     </div>
-                    <span className="text-xs font-bold text-[#1c1c17]">Funcity Resort</span>
-                    <span className="text-[11px] text-[#6f787e] mt-0.5">Baku Seaside Promenade</span>
+                    <span className="text-xs font-bold text-[#1c1c17]">Funcity Resorts, Ooty</span>
+                    <span className="text-[11px] text-[#6f787e] mt-0.5">Lovedale, Ooty-643003</span>
                     <a
-                      href="https://maps.google.com"
+                      href={RESORT_MAPS_URL}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="mt-2.5 inline-flex items-center gap-1.5 bg-[#087ea4] text-white text-[11px] font-bold px-3 py-1.5 rounded-full hover:bg-[#006483] transition-colors"

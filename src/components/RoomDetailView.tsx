@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   Users,
   BedDouble,
@@ -25,6 +25,9 @@ import {
 } from 'lucide-react';
 import { Room } from '../types';
 import { RESORT_ROOMS } from '../data/resortData';
+import { GuestSelector, GuestValue, DEFAULT_GUESTS, summariseGuests } from './GuestSelector';
+import { todayISO, addDaysISO, nightsBetween, formatDate } from '../utils/dates';
+import { openNativePicker } from '../utils/showPicker';
 
 interface RoomDetailViewProps {
   room?: Room;
@@ -37,10 +40,11 @@ export const RoomDetailView: React.FC<RoomDetailViewProps> = ({
   onSelectRoom,
   onBookNow,
 }) => {
-  const [checkIn, setCheckIn] = useState('24 Oct, 2024');
-  const [checkOut, setCheckOut] = useState('28 Oct, 2024');
-  const [guests, setGuests] = useState('2 Guests');
-  const [guestDropdownOpen, setGuestDropdownOpen] = useState(false);
+  const [checkIn, setCheckIn] = useState('');
+  const [checkOut, setCheckOut] = useState('');
+  const [guestValue, setGuestValue] = useState<GuestValue>(DEFAULT_GUESTS);
+  const checkInRef = useRef<HTMLInputElement>(null);
+  const checkOutRef = useRef<HTMLInputElement>(null);
   const [isLiked, setIsLiked] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
 
@@ -48,8 +52,12 @@ export const RoomDetailView: React.FC<RoomDetailViewProps> = ({
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [activePhotoIdx, setActivePhotoIdx] = useState(0);
 
+  const guests = summariseGuests(guestValue);
+  const today = todayISO();
+  const minCheckOut = checkIn ? addDaysISO(checkIn, 1) : addDaysISO(today, 1);
+
   // Nights calculation
-  const nights = 4;
+  const nights = nightsBetween(checkIn, checkOut) || 4;
   const roomTotal = room.price * nights;
   const resortFee = 120;
   const taxes = Math.round(roomTotal * 0.08);
@@ -310,62 +318,69 @@ export const RoomDetailView: React.FC<RoomDetailViewProps> = ({
               </div>
             </div>
 
-            {/* Booking Inputs Box */}
+            {/* Booking Inputs Box — Guests first, then dates */}
             <div className="border border-[#bec8ce]/70 rounded-2xl overflow-hidden divide-y divide-[#bec8ce]/60">
+              <div className="bg-[#fcf9f1]/60">
+                <GuestSelector
+                  value={guestValue}
+                  onChange={setGuestValue}
+                  compact
+                  onApply={() => openNativePicker(checkInRef.current)}
+                />
+              </div>
+
               <div className="grid grid-cols-2 divide-x divide-[#bec8ce]/60">
                 <div className="p-3 bg-[#fcf9f1]/60">
                   <label className="text-[10px] font-bold text-[#6f787e] uppercase tracking-wider block">
                     Check In
                   </label>
-                  <input
-                    type="text"
-                    value={checkIn}
-                    onChange={(e) => setCheckIn(e.target.value)}
-                    className="w-full bg-transparent text-sm font-semibold text-[#1c1c17] focus:outline-none mt-1"
-                  />
+                  <div className="relative mt-1">
+                    <span
+                      className={`text-sm font-semibold ${
+                        checkIn ? 'text-[#1c1c17]' : 'text-[#9aa2a7]'
+                      }`}
+                    >
+                      {checkIn ? formatDate(checkIn) : 'Select Date'}
+                    </span>
+                    <input
+                      ref={checkInRef}
+                      type="date"
+                      value={checkIn}
+                      min={today}
+                      onChange={(e) => {
+                        setCheckIn(e.target.value);
+                        if (e.target.value && checkOut && checkOut <= e.target.value) setCheckOut('');
+                        if (e.target.value) openNativePicker(checkOutRef.current);
+                      }}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                      aria-label="Check-in date"
+                    />
+                  </div>
                 </div>
-                <div className="p-3 bg-[#fcf9f1]/60">
+                <div className={`p-3 bg-[#fcf9f1]/60 ${checkIn ? '' : 'opacity-60'}`}>
                   <label className="text-[10px] font-bold text-[#6f787e] uppercase tracking-wider block">
                     Check Out
                   </label>
-                  <input
-                    type="text"
-                    value={checkOut}
-                    onChange={(e) => setCheckOut(e.target.value)}
-                    className="w-full bg-transparent text-sm font-semibold text-[#1c1c17] focus:outline-none mt-1"
-                  />
-                </div>
-              </div>
-
-              <div className="p-3 bg-[#fcf9f1]/60 relative">
-                <label className="text-[10px] font-bold text-[#6f787e] uppercase tracking-wider block">
-                  Guests
-                </label>
-                <div
-                  onClick={() => setGuestDropdownOpen(!guestDropdownOpen)}
-                  className="flex items-center justify-between cursor-pointer mt-1"
-                >
-                  <span className="text-sm font-semibold text-[#1c1c17]">{guests}</span>
-                  <ChevronDown className="w-4 h-4 text-[#6f787e]" />
-                </div>
-
-                {guestDropdownOpen && (
-                  <div className="absolute top-full left-0 right-0 mt-1 bg-white rounded-xl shadow-xl border border-[#e5e2db] py-2 z-20">
-                    {['1 Guest', '2 Guests', '3 Guests', '4 Guests'].map((opt) => (
-                      <button
-                        key={opt}
-                        type="button"
-                        onClick={() => {
-                          setGuests(opt);
-                          setGuestDropdownOpen(false);
-                        }}
-                        className="w-full text-left px-4 py-2 text-xs font-medium hover:bg-[#f6f3eb] text-[#1c1c17]"
-                      >
-                        {opt}
-                      </button>
-                    ))}
+                  <div className="relative mt-1">
+                    <span
+                      className={`text-sm font-semibold ${
+                        checkOut ? 'text-[#1c1c17]' : 'text-[#9aa2a7]'
+                      }`}
+                    >
+                      {checkOut ? formatDate(checkOut) : checkIn ? 'Select Date' : 'Check-in first'}
+                    </span>
+                    <input
+                      ref={checkOutRef}
+                      type="date"
+                      value={checkOut}
+                      min={minCheckOut}
+                      disabled={!checkIn}
+                      onChange={(e) => setCheckOut(e.target.value)}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed"
+                      aria-label="Check-out date"
+                    />
                   </div>
-                )}
+                </div>
               </div>
             </div>
 

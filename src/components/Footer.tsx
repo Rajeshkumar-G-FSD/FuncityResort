@@ -5,7 +5,9 @@ import {
   MapPin,
   Send,
   CheckCircle2,
+  MessageCircle,
 } from 'lucide-react';
+import { RESORT_ADDRESS, RESORT_PHONES, RESORT_EMAIL, RESORT_WHATSAPP } from '../data/contact';
 
 interface FooterProps {
   setActiveTab: (tab: string) => void;
@@ -47,7 +49,7 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenBooking }) =
             </div>
 
             <p className="text-sm text-[#3f484e] leading-relaxed max-w-sm">
-              An exclusive seaside resort sanctuary nestled along the Baku coastline, where azure waves meet golden sands, world-class comfort, and bespoke hospitality.
+              A luxurious haven in the heart of Ooty, offering modern amenities and classic hospitality near Love Dale Junction. Established in 2014.
             </p>
 
             {/* Newsletter Subscription */}
@@ -184,21 +186,31 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenBooking }) =
             <ul className="space-y-2.5 text-xs text-[#3f484e]">
               <li className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 text-[#087ea4] flex-shrink-0 mt-0.5" />
-                <span>Baku Seaside Boulevard, Azerbaijan</span>
+                <span>{RESORT_ADDRESS}</span>
               </li>
               <li className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-[#087ea4] flex-shrink-0" />
-                <a href="tel:+994500000000" className="hover:text-[#087ea4] font-semibold">
-                  +994 50 000 00 00
+                <MessageCircle className="w-4 h-4 text-[#25D366] flex-shrink-0" />
+                <a
+                  href={RESORT_WHATSAPP.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-[#087ea4] font-semibold"
+                >
+                  WhatsApp {RESORT_WHATSAPP.display}
                 </a>
               </li>
+              {RESORT_PHONES.map((p) => (
+                <li key={p.tel} className="flex items-center gap-2">
+                  <Phone className="w-4 h-4 text-[#087ea4] flex-shrink-0" />
+                  <a href={`tel:${p.tel}`} className="hover:text-[#087ea4]">
+                    {p.display}
+                  </a>
+                </li>
+              ))}
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-[#087ea4] flex-shrink-0" />
-                <a
-                  href="mailto:reservations@funcityresort.com"
-                  className="hover:text-[#087ea4] truncate"
-                >
-                  reservations@funcityresort.com
+                <a href={`mailto:${RESORT_EMAIL}`} className="hover:text-[#087ea4] truncate">
+                  {RESORT_EMAIL}
                 </a>
               </li>
             </ul>

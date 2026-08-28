@@ -4,11 +4,12 @@ import { HeroSection } from './components/HeroSection';
 import { BookingSearchWidget } from './components/BookingSearchWidget';
 import { AboutSection } from './components/AboutSection';
 import { ServicesSection } from './components/ServicesSection';
-import { RoomDetailView } from './components/RoomDetailView';
+import { RoomsPage } from './components/RoomsPage';
 import { GallerySection } from './components/GallerySection';
 import { TestimonialsSection } from './components/TestimonialsSection';
 import { ContactSection } from './components/ContactSection';
-import { ReservationModal } from './components/ReservationModal';
+import { BookingPopup } from './components/BookingPopup';
+import { BookingPage } from './components/BookingPage';
 import { Footer } from './components/Footer';
 import { RESORT_ROOMS, RESORT_SERVICES, TESTIMONIALS } from './data/resortData';
 import { Room, ServiceItem } from './types';
@@ -17,20 +18,30 @@ import { Star, ArrowRight, ShieldCheck, Waves, Sparkles, MapPin, Phone, Calendar
 export function App() {
   const [activeTab, setActiveTab] = useState<string>('home');
   const [selectedRoom, setSelectedRoom] = useState<Room>(RESORT_ROOMS[0]);
-  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const [isBookingPopupOpen, setIsBookingPopupOpen] = useState(false);
+  const [bookingCategoryId, setBookingCategoryId] = useState<string | undefined>(undefined);
   const [searchCriteria, setSearchCriteria] = useState<{
     checkIn: string;
     checkOut: string;
     guests: string;
     rooms: string;
   }>({
-    checkIn: '24 Oct, 2024',
-    checkOut: '28 Oct, 2024',
-    guests: '2 Adults, 1 Child',
+    checkIn: '',
+    checkOut: '',
+    guests: '2 Adults',
     rooms: '1 Room',
   });
 
-  // Handle Search Widget Submission
+  const scrollTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  // Navigate to the full booking page (optionally pre-selecting a room category)
+  const goToBookingPage = (categoryId?: string) => {
+    setBookingCategoryId(categoryId);
+    setActiveTab('booking');
+    scrollTop();
+  };
+
+  // Inline search widget on the home page -> jump straight to the booking page
   const handleSearch = (criteria: {
     checkIn: string;
     checkOut: string;
@@ -38,31 +49,29 @@ export function App() {
     rooms: string;
   }) => {
     setSearchCriteria(criteria);
-    setIsBookingModalOpen(true);
+    setBookingCategoryId(undefined);
+    goToBookingPage();
   };
 
-  // Open direct booking
-  const handleOpenBooking = (
-    roomToBook?: Room,
-    criteria?: { checkIn: string; checkOut: string; guests: string }
-  ) => {
-    if (roomToBook) {
-      setSelectedRoom(roomToBook);
-    }
-    if (criteria) {
-      setSearchCriteria((prev) => ({
-        ...prev,
-        ...criteria,
-      }));
-    }
-    setIsBookingModalOpen(true);
+  // Header / footer "Book Now" -> open the quick popup dialog
+  const openBookingPopup = () => setIsBookingPopupOpen(true);
+
+  // "Search" inside the popup -> close it and open the booking page
+  const handlePopupSearch = (criteria: {
+    checkIn: string;
+    checkOut: string;
+    guests: string;
+    rooms: string;
+  }) => {
+    setSearchCriteria(criteria);
+    setBookingCategoryId(undefined);
+    setIsBookingPopupOpen(false);
+    goToBookingPage();
   };
 
-  // Navigate to room detail
-  const handleSelectRoomAndNavigate = (room: Room) => {
-    setSelectedRoom(room);
+  const goToRooms = () => {
     setActiveTab('rooms');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    scrollTop();
   };
 
   return (
@@ -71,7 +80,7 @@ export function App() {
       <Navbar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        onOpenBooking={() => handleOpenBooking(selectedRoom)}
+        onOpenBooking={openBookingPopup}
         isScrolledForce={activeTab !== 'home'}
       />
 
@@ -81,7 +90,7 @@ export function App() {
         {activeTab === 'home' && (
           <div>
             {/* Clean Hero Section (Text removed from hero as requested) */}
-            <HeroSection onExploreClick={() => setActiveTab('rooms')} />
+            <HeroSection onExploreClick={goToRooms} />
 
             {/* Floating Booking Search Widget */}
             <BookingSearchWidget onSearch={handleSearch} />
@@ -147,13 +156,13 @@ export function App() {
 
                   <div className="flex flex-col sm:flex-row items-center gap-3 pt-4 border-t border-[#e5e2db]">
                     <button
-                      onClick={() => handleSelectRoomAndNavigate(selectedRoom)}
+                      onClick={goToRooms}
                       className="w-full sm:w-auto flex-1 bg-[#087ea4] hover:bg-[#006483] text-white font-bold text-sm py-3.5 px-6 rounded-full text-center floating-shadow hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
                     >
                       View Full Details
                     </button>
                     <button
-                      onClick={() => handleOpenBooking(selectedRoom)}
+                      onClick={openBookingPopup}
                       className="w-full sm:w-auto bg-[#f1eee6] hover:bg-[#ebe8e0] text-[#006483] font-bold text-sm py-3.5 px-6 rounded-full text-center transition-colors cursor-pointer"
                     >
                       Instant Reserve
@@ -193,7 +202,7 @@ export function App() {
         {/* ================= 1b. ABOUT US TAB ================= */}
         {activeTab === 'about' && (
           <div className="pt-20 md:pt-24">
-            <AboutSection onOpenBooking={() => handleOpenBooking(selectedRoom)} />
+            <AboutSection onOpenBooking={openBookingPopup} />
           </div>
         )}
 
@@ -204,15 +213,27 @@ export function App() {
           </div>
         )}
 
-        {/* ================= 3. ROOMS & SUITES TAB ================= */}
+        {/* ================= 3. ROOMS & SUITES PAGE ================= */}
         {activeTab === 'rooms' && (
-          <div className="pt-20 md:pt-24">
-            <RoomDetailView
-              room={selectedRoom}
-              onSelectRoom={(r) => setSelectedRoom(r)}
-              onBookNow={(r, bookingData) => handleOpenBooking(r, bookingData)}
-            />
-          </div>
+          <RoomsPage
+            onBack={() => {
+              setActiveTab('home');
+              scrollTop();
+            }}
+            onBook={(categoryId) => goToBookingPage(categoryId)}
+          />
+        )}
+
+        {/* ================= 3b. BOOKING PAGE ================= */}
+        {activeTab === 'booking' && (
+          <BookingPage
+            onBack={() => {
+              setActiveTab('home');
+              scrollTop();
+            }}
+            initialCategoryId={bookingCategoryId}
+            initialCriteria={searchCriteria}
+          />
         )}
 
         {/* ================= 4. GALLERY TAB ================= */}
@@ -237,18 +258,17 @@ export function App() {
         )}
       </main>
 
-      {/* Global Booking & Reservation Modal */}
-      <ReservationModal
-        isOpen={isBookingModalOpen}
-        onClose={() => setIsBookingModalOpen(false)}
-        initialRoom={selectedRoom}
-        initialCriteria={searchCriteria}
+      {/* Quick "Book Now" popup dialog */}
+      <BookingPopup
+        isOpen={isBookingPopupOpen}
+        onClose={() => setIsBookingPopupOpen(false)}
+        onSearch={handlePopupSearch}
       />
 
       {/* Luxury Footer */}
       <Footer
         setActiveTab={setActiveTab}
-        onOpenBooking={() => handleOpenBooking(selectedRoom)}
+        onOpenBooking={openBookingPopup}
       />
     </div>
   );

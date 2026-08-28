@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Phone, Menu, X, CalendarCheck } from 'lucide-react';
+import { Phone, Menu, X, CalendarCheck, MessageCircle } from 'lucide-react';
+import { RESORT_PHONES, RESORT_WHATSAPP } from '../data/contact';
 
 interface NavbarProps {
   activeTab: string;
@@ -108,13 +109,15 @@ export const Navbar: React.FC<NavbarProps> = ({
         {/* Desktop Actions & Contact */}
         <div className="hidden md:flex items-center gap-5">
           <a
-            href="tel:+994500000000"
+            href={RESORT_WHATSAPP.link}
+            target="_blank"
+            rel="noopener noreferrer"
             className={`flex items-center gap-1.5 text-sm font-medium transition-colors ${
               effectiveScrolled ? 'text-[#3f484e] hover:text-[#006483]' : 'text-white/90 hover:text-white drop-shadow-sm'
             }`}
           >
-            <Phone className="w-4 h-4 text-[#35BFD0]" />
-            <span>+994 50 000 00 00</span>
+            <MessageCircle className="w-4 h-4 text-[#25D366]" />
+            <span>{RESORT_WHATSAPP.display}</span>
           </a>
 
           <button
@@ -170,12 +173,24 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             <div className="pt-4 border-t border-[#e5e2db] flex flex-col gap-3">
               <a
-                href="tel:+994500000000"
-                className="flex items-center gap-2 text-sm text-[#3f484e] py-1"
+                href={RESORT_WHATSAPP.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-sm font-semibold text-[#1c1c17] py-1"
               >
-                <Phone className="w-4 h-4 text-[#006483]" />
-                <span>+994 50 000 00 00</span>
+                <MessageCircle className="w-4 h-4 text-[#25D366]" />
+                <span>WhatsApp {RESORT_WHATSAPP.display}</span>
               </a>
+              {RESORT_PHONES.map((p) => (
+                <a
+                  key={p.tel}
+                  href={`tel:${p.tel}`}
+                  className="flex items-center gap-2 text-sm text-[#3f484e] py-1"
+                >
+                  <Phone className="w-4 h-4 text-[#006483]" />
+                  <span>{p.display}</span>
+                </a>
+              ))}
               <button
                 onClick={() => {
                   setMobileMenuOpen(false);
