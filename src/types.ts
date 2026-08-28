@@ -28,7 +28,7 @@ export interface Room {
 export interface ServiceItem {
   id: string;
   name: string;
-  iconName: 'beach_access' | 'support' | 'local_bar' | 'sports_volleyball' | 'spa' | 'restaurant' | 'sailing';
+  iconName: string;
   shortDesc: string;
   fullDesc: string;
   category: string;

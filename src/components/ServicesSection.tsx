@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Umbrella, LifeBuoy, Wine, Trophy, ArrowRight, CheckCircle2, Clock, X } from 'lucide-react';
+import { BedDouble, ShieldCheck, Coffee, Mountain, ArrowRight, CheckCircle2, Clock, X } from 'lucide-react';
 import { RESORT_SERVICES } from '../data/resortData';
 import { ServiceItem } from '../types';
 import BlurText from './BlurText';
 import SplitText from './SplitText';
+import { ScrollReveal } from './ScrollReveal';
 
 interface ServicesSectionProps {
   onSelectService?: (service: ServiceItem) => void;
@@ -15,15 +16,15 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
   const getServiceIcon = (id: string) => {
     switch (id) {
       case 'relax':
-        return <Umbrella className="w-8 h-8 text-[#087ea4]" />;
+        return <BedDouble className="w-8 h-8 text-[#087ea4]" />;
       case 'save':
-        return <LifeBuoy className="w-8 h-8 text-[#087ea4]" />;
+        return <ShieldCheck className="w-8 h-8 text-[#087ea4]" />;
       case 'drink':
-        return <Wine className="w-8 h-8 text-[#087ea4]" />;
+        return <Coffee className="w-8 h-8 text-[#087ea4]" />;
       case 'game':
-        return <Trophy className="w-8 h-8 text-[#087ea4]" />;
+        return <Mountain className="w-8 h-8 text-[#087ea4]" />;
       default:
-        return <Umbrella className="w-8 h-8 text-[#087ea4]" />;
+        return <BedDouble className="w-8 h-8 text-[#087ea4]" />;
     }
   };
 
@@ -48,21 +49,26 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
           from={{ opacity: 0, y: 16 }}
           to={{ opacity: 1, y: 0 }}
           textAlign="center"
-          text="Indulge in tailored beachside relaxation, certified marine safety, artisanal sunset cocktail mixology, and recreational coastal activities."
+          text="Comfortable rooms, a secure gated property, fresh Nilgiri tea any hour, and easy access to Ooty's toy train, lake and gardens."
           className="max-w-2xl text-[#3f484e] text-base md:text-lg leading-relaxed"
         />
       </div>
 
-      {/* 4-Item Service Grid */}
+      {/* 4-Item Service Grid — cards slide in from alternating sides */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-        {RESORT_SERVICES.map((service) => (
-          <div
+        {RESORT_SERVICES.map((service, i) => (
+          <ScrollReveal
             key={service.id}
+            from={i % 2 === 0 ? 'left' : 'right'}
+            delay={i * 0.05}
+            className="h-full"
+          >
+          <div
             onClick={() => {
               setActiveModalService(service);
               onSelectService?.(service);
             }}
-            className="bg-white rounded-[24px] p-8 sunlight-shadow hover:sunlight-shadow-hover hover:-translate-y-2 transition-all duration-300 flex flex-col items-center text-center border border-[#e5e2db]/80 cursor-pointer group"
+            className="h-full bg-white rounded-[24px] p-8 sunlight-shadow hover:sunlight-shadow-hover hover:-translate-y-2 transition-all duration-300 flex flex-col items-center text-center border border-[#e5e2db]/80 cursor-pointer group"
           >
             {/* Circular Icon Container */}
             <div className="w-24 h-24 rounded-full bg-[#f6f3eb] group-hover:bg-[#087ea4]/10 flex items-center justify-center mb-6 transition-colors duration-300 border border-[#e5e2db]">
@@ -87,6 +93,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
               <ArrowRight className="w-3.5 h-3.5" />
             </div>
           </div>
+          </ScrollReveal>
         ))}
       </div>
 

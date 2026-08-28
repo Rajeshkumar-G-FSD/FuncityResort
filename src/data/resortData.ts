@@ -165,47 +165,51 @@ export const RESORT_SERVICES: ServiceItem[] = [
   {
     id: 'relax',
     name: 'RELAX',
-    iconName: 'beach_access',
-    shortDesc: 'Pristine private sun loungers, luxury cabanas, and tranquil seaside shade.',
-    fullDesc: 'Unwind along Baku’s finest private golden shore. Enjoy dedicated beach butler service, plush shaded cabanas, scented cool towels, and undisturbed serenity by the azure coastline.',
-    category: 'Beach & Comfort',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDCLybys6b_-UAnkh_7QVzrH6PVBpV8ambA4-liXp_wK-H2oRH4Icvhimvv0IFTVOb_W-SMo3-LagMqLFRvxS3zy5kB0lV5zAqjvSayOTqW0YtA7jt2FcNF6lWLm-5_fD-zy8qTd1neilk-2hK_YKSFA2F3oZIzFhLaZPqSGKJsH9vXQBUj7N6GlpLD_AevdkdF-d0FQFGYwPS8oSoV_Dqq5DMUue7HVw1MMqwFs3oRsbQDVb0E1-4oCsq0g0wKeyQ6Q8c',
-    features: ['Private Beach Cabanas', 'Cool Towel Service', 'Ergonomic Sunbeds', 'Infinity Pool Access'],
-    operatingHours: '07:00 AM - 08:00 PM'
+    iconName: 'bed',
+    shortDesc: 'Cosy rooms with warm blankets, 24-hour hot water and quiet corners to unwind in the hill air.',
+    fullDesc:
+      'Come back from a day of sightseeing to a clean, comfortable room, a hot shower at any hour and a still garden to sit out in the cool mountain air. Housekeeping keeps things tidy and the beds warm.',
+    category: 'Rest & Comfort',
+    image: '/images/funcity_couple_room.JPG',
+    features: ['Warm bedding', '24 hr hot water', 'Quiet garden seating', 'Daily housekeeping'],
+    operatingHours: 'All day',
   },
   {
     id: 'save',
-    name: 'SAVE',
-    iconName: 'support',
-    shortDesc: 'Certified international lifeguards and first-tier water safety assurance.',
-    fullDesc: 'Your peace of mind is paramount. Our beachfront is protected by certified marine lifeguards, dedicated first-aid stations, child-safe swimming coves, and round-the-clock safety supervision.',
-    category: 'Safety & Wellness',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuACqWFcttmHbbOba6mepMsgCof1MywUHwXbQkoo0T5byjgJoRt-CazQ3_qknlpobHGZeswXcEIX7i78rEpa90TacJod5DI8bYI_skgU_Qtl0RQ4x7EnYuGBmbmAEMN2l1h6AbYSBujGFP2rufjGXoWXYPyUwXEST-XonD2DNDXZiDJXNzoKIwG8wZci9fL3jIP1SoC0PEy6H1qLJm31gjlsNlhxW1udc5cF0b1iNRI7A2moUyiNIcvtnw',
-    features: ['24/7 Beachfront Lifeguards', 'Emergency Response Point', 'Secure Child Coves', 'Marine Life Monitoring'],
-    operatingHours: '24 Hours On-Call'
+    name: 'SECURE',
+    iconName: 'shield',
+    shortDesc: '24-hour front desk, gated CCTV entry and safe on-site parking for a worry-free Lovedale stay.',
+    fullDesc:
+      'Our reception is staffed round the clock, the property is gated with CCTV at the entry points and your vehicle stays safely parked on site. Arriving late by bus or train? Someone will be at the desk to check you in.',
+    category: 'Safety & Security',
+    image: '/images/funcity_parking.JPG',
+    features: ['24 hr manned reception', 'Gated CCTV entry', 'Secure on-site parking', 'Late check-in support'],
+    operatingHours: '24 hours',
   },
   {
     id: 'drink',
-    name: 'DRINK',
-    iconName: 'local_bar',
-    shortDesc: 'Craft tropical cocktails, fresh coconuts, and seaside sunset mixology.',
-    fullDesc: 'Sip artisanal beverages crafted by world-class mixologists. From chilled organic juices and fresh coconuts at noon to vintage champagne and sunset signature cocktails.',
-    category: 'Dining & Lounge',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuD5fjtbXkchaFikCsFWPbNx30q7Mj_ziZ1X7eaQXxFGw2fgh7ji57RQwyDtNFQCC9pP6wQEZ-Ll3TARCzWcRUoF-2gse0m4OgNLl4tZckLXeKPYJEs5R3N_1O0pe94dN4Wg-JvD491mV8TU94NDaVgp-Xf8ooqAMhvPxG_ACd4CjE4OnQO6dfuSXmTnKDbXJn_oXs9DQInjP9CHBWxmO0oFsJDa3uhs7ABRSF_wtqo5ES6dWeoGACr73g',
-    features: ['Sunset Mixology Bar', 'Fresh Pressed Juices', 'Swim-Up Pool Bar', 'Curated Wine Cellar'],
-    operatingHours: '10:00 AM - 01:00 AM'
+    name: 'BREW',
+    iconName: 'coffee',
+    shortDesc: 'Fresh Nilgiri tea and hot filter coffee round the clock, plus a bonfire on clear evenings.',
+    fullDesc:
+      'Ooty runs on tea. Ask the desk for a pot of fresh Nilgiri tea or hot filter coffee at any hour, warm up by the bonfire on a cold evening, and start the morning with a simple hot breakfast from the kitchens nearby.',
+    category: 'Tea & Coffee',
+    image: '/images/funcity_family_room_dining_area.JPG',
+    features: ['Nilgiri tea, any hour', 'Hot filter coffee', 'Evening bonfire', 'Hot breakfast nearby'],
+    operatingHours: 'Round the clock',
   },
   {
     id: 'game',
-    name: 'GAME',
-    iconName: 'sports_volleyball',
-    shortDesc: 'Beach volleyball, coastal water sports, jet skis, and tennis courts.',
-    fullDesc: 'Elevate your vacation energy with beach volleyball tournaments, stand-up paddleboarding, parasailing, catamaran sailing, and state-of-the-art tennis courts with private coaches.',
-    category: 'Recreation & Sports',
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuDyz6GRWIi9wXVQ5rN_jekGApOlAfOUtIBlGtJiZK1vTIEMxwM1NK3wHhCmU1njX9As2hNCbTAgtrqngYbaqKXTiAMSUU9CPKEUJNT_6RwY6YiP6QuOFLYhbc8rBaH3CpmHbSdzvmGVLz37BrwmEZ43V-A32YDz_PwrYhkPyLJwQmM0HP0pu-I109MT49PXyqBewuWZTYP7xg4ykD5vi1NvEyby4vpnIdTVhlcrq0cf4N1zOcbX5jlkmA',
-    features: ['Tournament Beach Volleyball', 'Jet Ski & Water Safari', 'Lagoon Paddleboarding', 'Floodlit Tennis Courts'],
-    operatingHours: '08:00 AM - 07:00 PM'
-  }
+    name: 'ROAM',
+    iconName: 'mountain',
+    shortDesc: 'Toy train, Ooty Lake, Botanical Garden, Doddabetta and the tea estates — all a short drive away.',
+    fullDesc:
+      "You're minutes from Lovedale station and the heritage Nilgiri toy train, and a short drive from Ooty Lake, the Government Botanical Garden, Doddabetta Peak and the tea-estate viewpoints. The front desk helps arrange cabs, local guides and day-trip routes.",
+    category: 'Sightseeing',
+    image: '/images/funcity_reception.JPG',
+    features: ['Toy train from Lovedale', 'Lake, Garden & Doddabetta', 'Tea-estate viewpoints', 'Cab & guide help'],
+    operatingHours: '7:00 AM - 8:00 PM',
+  },
 ];
 
 export const TESTIMONIALS: ReviewItem[] = [
