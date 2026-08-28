@@ -53,6 +53,28 @@
   background: #6f787e;
 }
 
+/* Horizontal auto-slide for the home-page Google reviews strip */
+@keyframes marquee-x {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+.marquee-track {
+  animation: marquee-x var(--marquee-duration, 60s) linear infinite;
+  will-change: transform;
+}
+.marquee-paused:hover .marquee-track {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
+
 /* Travelling tick for the "scroll to top" affordance */
 @keyframes scrollTick {
   0% {

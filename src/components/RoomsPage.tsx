@@ -3,6 +3,8 @@ import { ArrowLeft, X, ChevronLeft, ChevronRight, CalendarCheck, Star, MapPin } 
 import { ROOM_TYPES, inr } from '../data/rooms';
 import { RESORT_ADDRESS } from '../data/contact';
 import ScrollExpand from './ScrollExpand';
+import BlurText from './BlurText';
+import SplitText from './SplitText';
 
 interface RoomsPageProps {
   onBack: () => void;
@@ -80,13 +82,23 @@ export const RoomsPage: React.FC<RoomsPageProps> = ({ onBack, onBook }) => {
                 <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#a6893f]">
                   Category {i + 1}
                 </span>
-                <h2 className="text-2xl md:text-3xl font-extrabold text-[#1c1c17] tracking-tight mt-1">
-                  {cat.title}
-                </h2>
+                <BlurText
+                  as="h2"
+                  text={cat.title}
+                  className="text-2xl md:text-3xl font-extrabold text-[#1c1c17] tracking-tight mt-1"
+                />
                 <div className="w-16 h-1.5 bg-[#35BFD0] rounded-full mt-3" />
-                <p className="max-w-2xl text-[#3f484e] text-sm md:text-base leading-relaxed mt-4">
-                  {cat.blurb}
-                </p>
+                <SplitText
+                  tag="p"
+                  splitType="words"
+                  delay={14}
+                  duration={0.55}
+                  from={{ opacity: 0, y: 14 }}
+                  to={{ opacity: 1, y: 0 }}
+                  textAlign="left"
+                  text={cat.blurb}
+                  className="max-w-2xl text-[#3f484e] text-sm md:text-base leading-relaxed mt-4"
+                />
                 <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-4">
                   <span className="text-lg font-extrabold text-[#1c1c17]">
                     {inr(cat.weekdayRate)}

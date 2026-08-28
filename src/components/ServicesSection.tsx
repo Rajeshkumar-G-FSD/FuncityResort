@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Umbrella, LifeBuoy, Wine, Trophy, ArrowRight, CheckCircle2, Clock, X } from 'lucide-react';
 import { RESORT_SERVICES } from '../data/resortData';
 import { ServiceItem } from '../types';
+import BlurText from './BlurText';
+import SplitText from './SplitText';
 
 interface ServicesSectionProps {
   onSelectService?: (service: ServiceItem) => void;
@@ -29,14 +31,26 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
     <section id="services-section" className="py-12 md:py-20 px-4 md:px-12 max-w-[1280px] mx-auto">
       {/* Section Header with Cyan Wave Underline */}
       <div className="flex flex-col items-center text-center mb-14 md:mb-18">
-        <h2 className="text-3xl md:text-4xl font-extrabold text-[#1c1c17] tracking-tight uppercase">
-          SERVICE
-        </h2>
+        <BlurText
+          as="h2"
+          text="SERVICE"
+          animateBy="letters"
+          delay={45}
+          className="text-3xl md:text-4xl font-extrabold text-[#1c1c17] tracking-tight uppercase justify-center"
+        />
         {/* Cyan wave graphic */}
         <div className="w-20 h-2 bg-[#35BFD0] rounded-full mt-3 mb-4" />
-        <p className="max-w-2xl text-[#3f484e] text-base md:text-lg leading-relaxed">
-          Indulge in tailored beachside relaxation, certified marine safety, artisanal sunset cocktail mixology, and recreational coastal activities.
-        </p>
+        <SplitText
+          tag="p"
+          splitType="words"
+          delay={16}
+          duration={0.6}
+          from={{ opacity: 0, y: 16 }}
+          to={{ opacity: 1, y: 0 }}
+          textAlign="center"
+          text="Indulge in tailored beachside relaxation, certified marine safety, artisanal sunset cocktail mixology, and recreational coastal activities."
+          className="max-w-2xl text-[#3f484e] text-base md:text-lg leading-relaxed"
+        />
       </div>
 
       {/* 4-Item Service Grid */}

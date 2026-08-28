@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { ArrowLeft, MousePointer2, X, ChevronLeft, ChevronRight } from 'lucide-react';
 import CircularGallery from './CircularGallery';
+import BlurText from './BlurText';
+import SplitText from './SplitText';
 import { GALLERY_IMAGES } from '../data/gallery';
 import { RESORT_NAME, RESORT_ADDRESS } from '../data/contact';
 
@@ -27,14 +29,23 @@ export const GalleryPage: React.FC<GalleryPageProps> = ({ onBack }) => {
         <span className="text-xs font-bold uppercase tracking-[0.22em] text-[#a6893f]">
           {RESORT_NAME}
         </span>
-        <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-[#1c1c17] mt-2">
-          Resort Gallery
-        </h1>
+        <BlurText
+          as="h1"
+          text="Resort Gallery"
+          className="text-3xl md:text-5xl font-extrabold tracking-tight text-[#1c1c17] mt-2"
+        />
         <div className="w-20 h-2 bg-[#35BFD0] rounded-full mt-3" />
-        <p className="max-w-xl text-[#3f484e] text-sm md:text-base mt-4 leading-relaxed">
-          A look inside Fun City Resorts, Lovedale — reception, rooms, bathrooms, the family dining
-          area and parking. Drag, scroll or use the arrow keys to spin through.
-        </p>
+        <SplitText
+          tag="p"
+          splitType="words"
+          delay={14}
+          duration={0.55}
+          from={{ opacity: 0, y: 14 }}
+          to={{ opacity: 1, y: 0 }}
+          textAlign="left"
+          text="A look inside Fun City Resorts, Lovedale — reception, rooms, bathrooms, the family dining area and parking. Drag, scroll or use the arrow keys to spin through."
+          className="max-w-xl text-[#3f484e] text-sm md:text-base mt-4 leading-relaxed"
+        />
       </section>
 
       {/* Circular WebGL gallery */}

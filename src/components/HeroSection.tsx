@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Facebook, Instagram, Youtube, Mail, ShieldCheck } from 'lucide-react';
 import { RESORT_SOCIAL, RESORT_EMAIL } from '../data/contact';
+import BlurText from './BlurText';
+import SplitText from './SplitText';
 
 interface HeroSectionProps {
   onExploreClick?: () => void;
@@ -42,12 +44,26 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onExploreClick, onAdmi
         <span className="text-[11px] font-bold uppercase tracking-[0.28em] text-white/80">
           Fun City Resorts · Lovedale, Ooty
         </span>
-        <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mt-3 drop-shadow-[0_2px_24px_rgba(0,0,0,0.4)]">
-          A calm base in the hills
-        </h1>
-        <p className="text-white/85 text-sm md:text-lg mt-3">
-          Comfortable Couple &amp; Family rooms, moments from Love Dale Junction.
-        </p>
+        <BlurText
+          as="h1"
+          text="A calm base in the hills"
+          delay={200}
+          animateBy="words"
+          direction="top"
+          className="text-4xl md:text-6xl font-extrabold tracking-tight mt-3 text-white drop-shadow-[0_2px_24px_rgba(0,0,0,0.4)] justify-center"
+        />
+        <SplitText
+          tag="p"
+          splitType="words"
+          delay={20}
+          duration={0.6}
+          from={{ opacity: 0, y: 16 }}
+          to={{ opacity: 1, y: 0 }}
+          textAlign="center"
+          rootMargin="0px"
+          text="Comfortable Couple & Family rooms, moments from Love Dale Junction."
+          className="text-white/85 text-sm md:text-lg mt-3"
+        />
         <button
           onClick={onExploreClick}
           className="mt-6 bg-white text-[#1c1c17] font-bold text-sm px-8 py-3.5 rounded-full hover:scale-105 active:scale-95 transition-transform"

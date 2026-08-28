@@ -17,6 +17,9 @@ export default defineConfig(() => {
         output: {
           manualChunks: {
             firebase: ['firebase/app', 'firebase/firestore', 'firebase/auth', 'firebase/analytics'],
+            motion: ['motion/react'],
+            gl: ['ogl'],
+            gsap: ['gsap', 'gsap/ScrollTrigger', 'gsap/SplitText', '@gsap/react'],
           },
         },
       },

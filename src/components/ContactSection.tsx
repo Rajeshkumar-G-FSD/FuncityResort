@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import BlurText from './BlurText';
+import SplitText from './SplitText';
 import {
   MapPin,
   Phone,
@@ -57,9 +59,11 @@ export const ContactSection: React.FC = () => {
 
         {/* Title in Header Banner */}
         <div className="relative z-20 flex flex-col items-center px-4">
-          <h1 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight drop-shadow-md">
-            Contact Us
-          </h1>
+          <BlurText
+            as="h1"
+            text="Contact Us"
+            className="text-4xl md:text-5xl font-extrabold text-white tracking-tight drop-shadow-md justify-center"
+          />
           {/* Cyan Wave Graphic */}
           <div className="w-20 h-2 bg-[#35BFD0] rounded-full mt-3 shadow-sm" />
         </div>
@@ -82,12 +86,22 @@ export const ContactSection: React.FC = () => {
           {/* Left Column: "Get in Touch" Form (7 Cols) */}
           <div className="lg:col-span-7 bg-white rounded-[24px] p-8 md:p-10 sunlight-shadow border border-[#e5e2db]">
             <div className="mb-8">
-              <h2 className="text-2xl md:text-3xl font-extrabold text-[#1c1c17] tracking-tight">
-                Get in Touch
-              </h2>
-              <p className="text-[#3f484e] text-sm md:text-base mt-2 leading-relaxed">
-                Whether planning a getaway, hosting a private beachfront celebration, or inquiring about custom suites, our dedicated hospitality team is here to assist.
-              </p>
+              <BlurText
+                as="h2"
+                text="Get in Touch"
+                className="text-2xl md:text-3xl font-extrabold text-[#1c1c17] tracking-tight"
+              />
+              <SplitText
+                tag="p"
+                splitType="words"
+                delay={14}
+                duration={0.55}
+                from={{ opacity: 0, y: 14 }}
+                to={{ opacity: 1, y: 0 }}
+                textAlign="left"
+                text="Whether you're planning a getaway, booking rooms for a group, or have a question about your stay, our front desk is here to help."
+                className="text-[#3f484e] text-sm md:text-base mt-2 leading-relaxed"
+              />
             </div>
 
             {submitted ? (

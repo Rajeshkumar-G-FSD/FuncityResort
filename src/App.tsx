@@ -18,8 +18,10 @@ import { AdminLoginModal } from './components/AdminLoginModal';
 import { AdminPage } from './components/AdminPage';
 import { Footer } from './components/Footer';
 import { ScrollToTop } from './components/ScrollToTop';
+import { ReviewsMarquee } from './components/ReviewsMarquee';
+import BlurText from './components/BlurText';
+import SplitText from './components/SplitText';
 import { GuestValue, DEFAULT_GUESTS } from './components/GuestSelector';
-import { TESTIMONIALS } from './data/resortData';
 import { ROOM_TYPES, fromRate, inr } from './data/rooms';
 import { RESORT_NAME } from './data/contact';
 import { Star, MapPin, Wallet, Clock3 } from 'lucide-react';
@@ -189,18 +191,23 @@ export function App() {
                       <span className="text-xs text-[#6f787e]">413 guest reviews</span>
                     </div>
 
-                    <h3 className="text-2xl md:text-3xl font-extrabold text-[#1c1c17] tracking-tight">
-                      {RESORT_NAME}
-                    </h3>
+                    <BlurText
+                      as="h3"
+                      text={RESORT_NAME}
+                      className="text-2xl md:text-3xl font-extrabold text-[#1c1c17] tracking-tight"
+                    />
 
-                    <p className="text-sm text-[#3f484e] leading-relaxed">
-                      Located in Lovedale, right by Love Dale Junction on Coonoor Road, Fun City
-                      Resorts offers spotless Couple and Family rooms with 24&#8209;hour hot water,
-                      free Wi-Fi, air conditioning and prompt room service. Our reception is staffed
-                      around the clock, and the toy&#8209;train station, Ooty Lake and the Botanical
-                      Garden are all a short drive away — a comfortable, well&#8209;connected base for
-                      your hill&#8209;station stay.
-                    </p>
+                    <SplitText
+                      tag="p"
+                      splitType="words"
+                      delay={12}
+                      duration={0.55}
+                      from={{ opacity: 0, y: 14 }}
+                      to={{ opacity: 1, y: 0 }}
+                      textAlign="left"
+                      text="Located in Lovedale, right by Love Dale Junction on Coonoor Road, Fun City Resorts offers spotless Couple and Family rooms with 24-hour hot water, free Wi-Fi, air conditioning and prompt room service. Our reception is staffed around the clock, and the toy-train station, Ooty Lake and the Botanical Garden are all a short drive away."
+                      className="text-sm text-[#3f484e] leading-relaxed"
+                    />
 
                     <div className="grid grid-cols-2 gap-3 pt-2">
                       <div className="bg-[#f6f3eb] p-3 rounded-xl">
@@ -250,30 +257,8 @@ export function App() {
               </div>
             </section>
 
-            {/* Testimonials Preview Quote */}
-            <section className="py-8 md:py-14 px-4 md:px-12 max-w-[1280px] mx-auto">
-              <div className="bg-white rounded-[24px] p-8 md:p-12 sunlight-shadow border border-[#e5e2db] flex flex-col md:flex-row items-center gap-8">
-                <img
-                  src={TESTIMONIALS[0].avatar}
-                  alt={TESTIMONIALS[0].name}
-                  className="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover border-4 border-[#f6f3eb] shadow-md flex-shrink-0"
-                />
-                <div className="flex-grow text-center md:text-left space-y-2">
-                  <div className="flex items-center justify-center md:justify-start gap-1 text-amber-500">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-current" />
-                    ))}
-                  </div>
-                  <p className="text-base md:text-lg font-medium text-[#1c1c17] italic leading-relaxed">
-                    "{TESTIMONIALS[0].comment}"
-                  </p>
-                  <div>
-                    <span className="font-bold text-[#1c1c17] text-sm">{TESTIMONIALS[0].name}</span>
-                    <span className="text-[#6f787e] text-xs ml-2">— {TESTIMONIALS[0].location}</span>
-                  </div>
-                </div>
-              </div>
-            </section>
+            {/* Google reviews — horizontal auto-slide */}
+            <ReviewsMarquee onSeeAll={() => navigate('testimonials')} />
           </div>
         )}
 

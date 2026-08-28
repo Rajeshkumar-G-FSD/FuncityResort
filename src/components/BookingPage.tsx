@@ -16,6 +16,7 @@ import {
   Check,
 } from 'lucide-react';
 import { GuestSelector, GuestValue, DEFAULT_GUESTS, summariseGuests } from './GuestSelector';
+import BlurText from './BlurText';
 import { todayISO, addDaysISO, nightsBetween, isISODate, formatDate } from '../utils/dates';
 import { openNativePicker } from '../utils/showPicker';
 import { RESORT_ADDRESS, RESORT_NAME, RESORT_UPI, RESORT_WHATSAPP } from '../data/contact';
@@ -445,9 +446,14 @@ export const BookingPage: React.FC<BookingPageProps> = ({
             <Sparkles className="w-3.5 h-3.5" />
             {RESORT_NAME}
           </div>
-          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white mt-2">
-            Book your stay
-          </h1>
+          <BlurText
+            as="h1"
+            text="Book your stay"
+            delay={200}
+            animateBy="words"
+            direction="top"
+            className="text-3xl md:text-5xl font-extrabold tracking-tight text-white mt-2"
+          />
           <p className="flex items-start gap-1.5 text-white/75 text-xs md:text-sm mt-2 max-w-md">
             <MapPin className="w-4 h-4 flex-shrink-0 mt-0.5" />
             {RESORT_ADDRESS}
@@ -658,7 +664,11 @@ export const BookingPage: React.FC<BookingPageProps> = ({
                 >
                   <ArrowLeft className="w-3.5 h-3.5" /> Change rooms
                 </button>
-                <h3 className="text-lg font-extrabold text-[#1c1c17]">Guest details</h3>
+                <BlurText
+                  as="h3"
+                  text="Guest details"
+                  className="text-lg font-extrabold text-[#1c1c17]"
+                />
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <Input label="Full name *" value={guestName} onChange={setGuestName} placeholder="e.g. Priya Sharma" />
@@ -700,9 +710,11 @@ export const BookingPage: React.FC<BookingPageProps> = ({
                   <ArrowLeft className="w-3.5 h-3.5" /> Back to guest details
                 </button>
                 <div>
-                  <h3 className="text-lg font-extrabold text-[#1c1c17]">
-                    Pay advance to hold your {selectedRooms.length > 1 ? 'rooms' : 'room'}
-                  </h3>
+                  <BlurText
+                    as="h3"
+                    text={`Pay advance to hold your ${selectedRooms.length > 1 ? 'rooms' : 'room'}`}
+                    className="text-lg font-extrabold text-[#1c1c17]"
+                  />
                   <p className="text-sm text-[#3f484e] mt-1">
                     Choose how much to pay now. The rest is paid at the hotel.
                   </p>

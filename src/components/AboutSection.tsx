@@ -14,6 +14,8 @@ import {
   Sparkles,
   ArrowRight,
 } from 'lucide-react';
+import BlurText from './BlurText';
+import SplitText from './SplitText';
 
 interface AboutSectionProps {
   onOpenBooking?: () => void;
@@ -64,17 +66,23 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onOpenBooking }) => 
         <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#087ea4] mb-3">
           About Us
         </span>
-        <h2 className="text-3xl md:text-4xl font-extrabold text-[#1c1c17] tracking-tight uppercase">
-          Fun City in Lovedale, Ooty
-        </h2>
+        <BlurText
+          as="h2"
+          text="Fun City in Lovedale, Ooty"
+          className="text-3xl md:text-4xl font-extrabold text-[#1c1c17] tracking-tight uppercase justify-center"
+        />
         <div className="w-20 h-2 bg-[#35BFD0] rounded-full mt-3 mb-5" />
-        <p className="max-w-3xl text-[#3f484e] text-base md:text-lg leading-relaxed">
-          Fun City in Lovedale, Ooty is a luxurious haven for travelers seeking comfort, elegance,
-          and world-class hospitality. Established in 2014, the hotel is conveniently located in the
-          heart of Ooty, offering easy access to popular Love Dale Junction and key destinations.
-          With its unwavering commitment to excellence, Fun City showcases its dedication to guest
-          satisfaction and premium service.
-        </p>
+        <SplitText
+          tag="p"
+          splitType="words"
+          delay={12}
+          duration={0.55}
+          from={{ opacity: 0, y: 14 }}
+          to={{ opacity: 1, y: 0 }}
+          textAlign="center"
+          text="Fun City in Lovedale, Ooty is a comfortable base for travellers seeking a clean, well-run stay. Established in 2014, the hotel sits right by Love Dale Junction on Coonoor Road, with easy access to Ooty's key destinations and a team focused on guest satisfaction and prompt service."
+          className="max-w-3xl text-[#3f484e] text-base md:text-lg leading-relaxed"
+        />
 
         {/* Key facts */}
         <div className="flex flex-wrap items-center justify-center gap-3 mt-7">
@@ -99,7 +107,11 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onOpenBooking }) => 
 
       {/* Overview */}
       <div className="bg-white rounded-[24px] p-8 md:p-12 sunlight-shadow border border-[#e5e2db]/80 mb-10">
-        <h3 className="text-2xl font-bold text-[#1c1c17] tracking-tight mb-4">Overview</h3>
+        <BlurText
+          as="h3"
+          text="Overview"
+          className="text-2xl font-bold text-[#1c1c17] tracking-tight mb-4"
+        />
         <p className="text-[#3f484e] text-base leading-relaxed">
           At Fun City, guests are treated to a blend of modern amenities and classic hospitality.
           Each room and suite is meticulously designed to offer unparalleled comfort, featuring Free
@@ -111,9 +123,11 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onOpenBooking }) => 
       {/* Room Categories */}
       <div className="mb-10">
         <div className="text-center mb-8">
-          <h3 className="text-2xl md:text-3xl font-bold text-[#1c1c17] tracking-tight">
-            Room Categories
-          </h3>
+          <BlurText
+            as="h3"
+            text="Room Categories"
+            className="text-2xl md:text-3xl font-bold text-[#1c1c17] tracking-tight justify-center"
+          />
           <p className="max-w-2xl mx-auto text-[#3f484e] text-sm md:text-base leading-relaxed mt-2">
             Fun City in Lovedale, Ooty offers a variety of accommodation options tailored to suit
             every guest's preferences. These include:
@@ -137,9 +151,11 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onOpenBooking }) => 
 
       {/* Amenities and Services */}
       <div className="bg-white rounded-[24px] p-8 md:p-12 sunlight-shadow border border-[#e5e2db]/80 mb-10">
-        <h3 className="text-2xl font-bold text-[#1c1c17] tracking-tight mb-2">
-          Amenities and Services
-        </h3>
+        <BlurText
+          as="h3"
+          text="Amenities and Services"
+          className="text-2xl font-bold text-[#1c1c17] tracking-tight mb-2"
+        />
         <p className="text-[#3f484e] text-sm md:text-base leading-relaxed mb-8">
           The hotel provides a range of services to enhance your experience, including:
         </p>
@@ -160,9 +176,11 @@ export const AboutSection: React.FC<AboutSectionProps> = ({ onOpenBooking }) => 
         <div className="lg:col-span-7 bg-white rounded-[24px] p-8 md:p-12 sunlight-shadow border border-[#e5e2db]/80">
           <div className="flex items-center gap-3 mb-4">
             <ShieldCheck className="w-6 h-6 text-[#087ea4]" />
-            <h3 className="text-2xl font-bold text-[#1c1c17] tracking-tight">
-              Commitment to Excellence
-            </h3>
+            <BlurText
+              as="h3"
+              text="Commitment to Excellence"
+              className="text-2xl font-bold text-[#1c1c17] tracking-tight"
+            />
           </div>
           <p className="text-[#3f484e] text-base leading-relaxed mb-4">
             At Fun City, every detail is thoughtfully curated to provide an exceptional experience.
