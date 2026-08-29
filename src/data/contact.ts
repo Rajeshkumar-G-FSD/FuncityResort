@@ -1,4 +1,8 @@
 export const RESORT_NAME = 'Funcity Resorts, Ooty';
+export const RESORT_LOGO = '/images/funcity_logo.png';
+
+export const RESORT_WEBSITE = 'www.funcityooty.com';
+export const RESORT_WEBSITE_URL = 'https://www.funcityooty.com';
 
 export const RESORT_ADDRESS =
   'Love Dale Junction, Coonoor Road, Lovedale, Ooty-643003, Tamil Nadu';

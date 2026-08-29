@@ -8,6 +8,7 @@ export const TAB_PATH: Record<string, string> = {
   testimonials: '/testimonials',
   contact: '/contact',
   booking: '/book',
+  brochure: '/brochure',
   admin: '/admin',
 };
 

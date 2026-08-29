@@ -53,6 +53,32 @@
   background: #6f787e;
 }
 
+/* Single-page property brochure — print / Save as PDF */
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 10mm;
+  }
+  html,
+  body {
+    background: #ffffff !important;
+  }
+  /* hide the whole app, then reveal only the brochure sheet */
+  #root * {
+    visibility: hidden !important;
+  }
+  #property-brochure,
+  #property-brochure * {
+    visibility: visible !important;
+  }
+  #property-brochure {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+}
+
 /* Horizontal auto-slide for the home-page Google reviews strip */
 @keyframes marquee-x {
   from {

@@ -20,6 +20,7 @@ export default defineConfig(() => {
             motion: ['motion/react'],
             gl: ['ogl'],
             gsap: ['gsap', 'gsap/ScrollTrigger', 'gsap/SplitText', '@gsap/react'],
+            pdf: ['jspdf'],
           },
         },
       },

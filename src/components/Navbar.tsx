@@ -64,13 +64,13 @@ export const Navbar: React.FC<NavbarProps> = ({
           className="flex items-center gap-2.5 text-left group focus:outline-none"
         >
           <div
-            className={`w-9 h-9 md:w-12 md:h-12 rounded-full flex items-center justify-center transition-colors ${
+            className={`w-14 h-14 md:w-[72px] md:h-[72px] rounded-full flex items-center justify-center transition-colors overflow-hidden ${
               effectiveScrolled
                 ? 'bg-[#006483]/10 text-[#006483]'
                 : 'bg-white/20 backdrop-blur text-white group-hover:bg-white/30'
             }`}
           >
-            <img src="/images/funcity_logo.png" alt="Funcity logo" className="w-6 h-6 md:w-8 md:h-8 object-contain" />
+            <img src="/images/funcity_logo.png" alt="Funcity logo" className="w-11 h-11 md:w-14 md:h-14 object-contain" />
           </div>
           <span className="sr-only">Funcity Resort</span>
         </button>

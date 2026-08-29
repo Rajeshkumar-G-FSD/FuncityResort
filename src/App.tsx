@@ -20,6 +20,7 @@ import { Footer } from './components/Footer';
 import { ScrollToTop } from './components/ScrollToTop';
 import { ReviewsMarquee } from './components/ReviewsMarquee';
 import { ChatBot, ChatLead } from './components/ChatBot';
+import { PropertyBrochure } from './components/PropertyBrochure';
 import BlurText from './components/BlurText';
 import SplitText from './components/SplitText';
 import { GuestValue, DEFAULT_GUESTS } from './components/GuestSelector';
@@ -40,6 +41,7 @@ export function App() {
   const [checkOut, setCheckOut] = useState('');
   const [guestValue, setGuestValue] = useState<GuestValue>(DEFAULT_GUESTS);
   const [chatLead, setChatLead] = useState<ChatLead | null>(null);
+  const [brochureOpen, setBrochureOpen] = useState(false);
 
   // Firebase auth session: undefined = resolving, null = none, string = email
   const [fbUser, setFbUser] = useState<string | null | undefined>(undefined);
@@ -337,10 +339,19 @@ export function App() {
         setActiveTab={navigate}
         onOpenBooking={openBookingPopup}
         onAdmin={openAdmin}
+        onBrochure={() => navigate('brochure')}
       />
 
       <ScrollToTop />
-      <ChatBot onBookNow={handleChatBook} />
+      <ChatBot onBookNow={handleChatBook} onBrochure={() => setBrochureOpen(true)} />
+      <PropertyBrochure
+        open={brochureOpen || activeTab === 'brochure'}
+        onClose={() => {
+          setBrochureOpen(false);
+          if (activeTab === 'brochure') navigate('home');
+        }}
+        guestName={chatLead?.name}
+      />
     </div>
   );
 }

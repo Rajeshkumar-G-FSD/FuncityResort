@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { MessageCircle, X, Send, Check, CalendarCheck } from 'lucide-react';
+import { MessageCircle, X, Send, Check, CalendarCheck, FileText } from 'lucide-react';
 import { answerFor, greetingByTime, QUICK_REPLIES } from '../data/botKnowledge';
 
 export interface ChatLead {
@@ -11,6 +11,7 @@ export interface ChatLead {
 
 interface ChatBotProps {
   onBookNow: (lead: ChatLead) => void;
+  onBrochure: () => void;
 }
 
 type Step = 'chat' | 'name' | 'phone' | 'whatsapp' | 'whatsappNum' | 'email' | 'ready';
@@ -35,7 +36,7 @@ const isEmail = (s: string) => /^\S+@\S+\.\S+$/.test(s.trim());
 const bookingIntent = (s: string) =>
   /\b(book|booking|reserve|reservation|book a room|book now)\b/i.test(s);
 
-export const ChatBot: React.FC<ChatBotProps> = ({ onBookNow }) => {
+export const ChatBot: React.FC<ChatBotProps> = ({ onBookNow, onBrochure }) => {
   const [open, setOpen] = useState(false);
   const [greeted, setGreeted] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([]);
@@ -200,6 +201,11 @@ export const ChatBot: React.FC<ChatBotProps> = ({ onBookNow }) => {
     setOpen(false);
   };
 
+  const doBrochure = () => {
+    onBrochure();
+    setOpen(false);
+  };
+
   return (
     <>
       {/* Launcher */}
@@ -247,12 +253,20 @@ export const ChatBot: React.FC<ChatBotProps> = ({ onBookNow }) => {
                 >
                   {m.text}
                   {m.action === 'book' && (
-                    <button
-                      onClick={doBook}
-                      className="mt-2 w-full flex items-center justify-center gap-2 bg-[#25D366] text-white font-bold text-xs py-2 rounded-lg hover:brightness-105 active:scale-95 transition-all"
-                    >
-                      <CalendarCheck className="w-4 h-4" /> Book Now
-                    </button>
+                    <div className="mt-2 space-y-1.5">
+                      <button
+                        onClick={doBook}
+                        className="w-full flex items-center justify-center gap-2 bg-[#25D366] text-white font-bold text-xs py-2 rounded-lg hover:brightness-105 active:scale-95 transition-all"
+                      >
+                        <CalendarCheck className="w-4 h-4" /> Book Now
+                      </button>
+                      <button
+                        onClick={doBrochure}
+                        className="w-full flex items-center justify-center gap-2 bg-white border border-[#25D366]/50 text-[#075E54] font-bold text-xs py-2 rounded-lg hover:bg-[#25D366]/10 transition-all"
+                      >
+                        <FileText className="w-4 h-4" /> Property details (PDF)
+                      </button>
+                    </div>
                   )}
                   <span className="block text-[10px] text-[#667781] text-right mt-0.5">
                     {m.time}

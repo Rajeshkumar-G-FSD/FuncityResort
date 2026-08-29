@@ -13,9 +13,15 @@ interface FooterProps {
   setActiveTab: (tab: string) => void;
   onOpenBooking: () => void;
   onAdmin: () => void;
+  onBrochure: () => void;
 }
 
-export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenBooking, onAdmin }) => {
+export const Footer: React.FC<FooterProps> = ({
+  setActiveTab,
+  onOpenBooking,
+  onAdmin,
+  onBrochure,
+}) => {
   const [newsletterEmail, setNewsletterEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
 
@@ -43,8 +49,8 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenBooking, onA
               onClick={() => scrollToTopAndSet('home')}
               className="flex items-center gap-2.5 cursor-pointer group"
             >
-              <div className="w-9 h-9 md:w-12 md:h-12 rounded-full bg-[#006483]/10 text-[#006483] flex items-center justify-center group-hover:bg-[#006483]/20 transition-colors">
-                <img src="/images/funcity_logo.png" alt="Funcity logo" className="w-6 h-6 md:w-8 md:h-8 object-contain" />
+              <div className="w-14 h-14 md:w-16 md:h-16 rounded-full bg-[#006483]/10 text-[#006483] flex items-center justify-center group-hover:bg-[#006483]/20 transition-colors overflow-hidden">
+                <img src="/images/funcity_logo.png" alt="Funcity logo" className="w-11 h-11 md:w-[52px] md:h-[52px] object-contain" />
               </div>
               <span className="sr-only">Funcity Resort</span>
             </div>
@@ -222,7 +228,9 @@ export const Footer: React.FC<FooterProps> = ({ setActiveTab, onOpenBooking, onA
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-[#6f787e]">
           <p>© {new Date().getFullYear()} Funcity Resort. All rights reserved.</p>
           <div className="flex items-center gap-6">
-            <span className="hover:text-[#087ea4] cursor-pointer">Privacy Policy</span>
+            <button onClick={onBrochure} className="hover:text-[#087ea4] cursor-pointer font-semibold">
+              Property details (PDF)
+            </button>
             <span className="hover:text-[#087ea4] cursor-pointer">Terms of Service</span>
             <button onClick={onAdmin} className="hover:text-[#087ea4] cursor-pointer">
               Admin
